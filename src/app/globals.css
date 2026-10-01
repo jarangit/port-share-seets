@@ -1,1 +1,147 @@
 @import "tailwindcss";
+
+/* ————————————————————————————————————————————————
+   LAYER 1 · PRIMITIVE TOKENS (raw values)
+   Plain :root vars only — no Tailwind utilities are
+   generated from these, so feature code cannot reach
+   them directly. Semantic tokens below are the only
+   way in.
+———————————————————————————————————————————————— */
+:root {
+  --p-ink: #09090b;
+  --p-ink-hover: #27272a;
+  --p-ink-active: #18181b;
+  --p-ink-bold: #3f3f46;
+  --p-ink-soft: #52525b;
+  --p-ink-faint: #71717a;
+  --p-ink-ghost: #a1a1aa;
+  --p-ink-mist: #d4d4d8;
+  --p-on-ink: #fafafa;
+
+  --p-paper: #ffffff;
+  --p-canvas: #fafaf9;
+  --p-wash: #f4f4f5;
+  --p-fill: #e4e4e7;
+  --p-app: #e4e4e7;
+
+  --p-brand: #fbbf24;
+  --p-brand-deep: #f59e0b;
+  --p-brand-soft: #fcd34d;
+  --p-success: #10b981;
+  --p-success-soft: #34d399;
+  --p-verified: #059669;
+  --p-danger: #dc2626;
+  --p-danger-hover: #ef4444;
+  --p-overlay: rgb(0 0 0 / 0.6);
+
+  --p-avatar-coal: #262626;
+  --p-avatar-bark: #44403c;
+  --p-avatar-slate: #3f3f46;
+
+  --p-radius-card: 18px;
+  --p-radius-tile: 16px;
+
+  --font-sans: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ————————————————————————————————————————————————
+   LAYER 2 · SEMANTIC TOKENS (meaning, not values)
+   These are mapped into Tailwind via @theme inline,
+   so `src/components/ui/**` — and only that layer —
+   may use utilities like `bg-surface` or `text-muted`.
+———————————————————————————————————————————————— */
+:root {
+  --app: var(--p-app);
+  --surface: var(--p-paper);
+  --surface-warm: var(--p-canvas);
+  --wash: var(--p-wash);
+  --fill: var(--p-fill);
+
+  --ink: var(--p-ink);
+  --ink-hover: var(--p-ink-hover);
+  --ink-active: var(--p-ink-active);
+  --ink-bold: var(--p-ink-bold);
+  --ink-soft: var(--p-ink-soft);
+  --muted: var(--p-ink-faint);
+  --faint: var(--p-ink-ghost);
+  --mist: var(--p-ink-mist);
+  --on-ink: var(--p-on-ink);
+
+  --brand: var(--p-brand);
+  --brand-deep: var(--p-brand-deep);
+  --brand-soft: var(--p-brand-soft);
+  --on-brand: var(--p-ink);
+  --success: var(--p-success);
+  --success-soft: var(--p-success-soft);
+  --on-success: var(--p-paper);
+  --verified: var(--p-verified);
+  --danger: var(--p-danger);
+  --danger-hover: var(--p-danger-hover);
+  --on-danger: var(--p-paper);
+  --overlay: var(--p-overlay);
+
+  --radius-card: var(--p-radius-card);
+  --radius-tile: var(--p-radius-tile);
+}
+
+@theme inline {
+  --color-app: var(--app);
+  --color-surface: var(--surface);
+  --color-surface-warm: var(--surface-warm);
+  --color-wash: var(--wash);
+  --color-fill: var(--fill);
+
+  --color-ink: var(--ink);
+  --color-ink-hover: var(--ink-hover);
+  --color-ink-active: var(--ink-active);
+  --color-ink-bold: var(--ink-bold);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-mist: var(--mist);
+  --color-on-ink: var(--on-ink);
+
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-on-success: var(--on-success);
+  --color-verified: var(--verified);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-on-danger: var(--on-danger);
+  --color-overlay: var(--overlay);
+
+  --radius-card: var(--radius-card);
+  --radius-tile: var(--radius-tile);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body {
+  background: var(--app);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* flat mock map texture — solid + grid lines only, no gradients/shadows */
+.map-grid {
+  background-color: var(--wash);
+  background-image:
+    linear-gradient(to right, rgb(0 0 0 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
