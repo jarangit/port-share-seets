@@ -13,9 +13,9 @@ const surfaceVariants = cva("rounded-card text-ink", {
     },
     pad: {
       sm: "p-2",
-      md: "p-4",
-      lg: "p-6",
-      xl: "p-8",
+      md: "p-3",
+      lg: "p-4",
+      xl: "p-6",
     },
   },
   defaultVariants: { tone: "raised", pad: "md" },

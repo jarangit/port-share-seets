@@ -23,7 +23,7 @@ export function NavItem({
       href={href}
       onClick={onClick}
       className={cn(
-        "flex items-center gap-4 rounded-tile px-4 py-4 text-sm font-bold",
+        "flex items-center gap-3 rounded-tile px-3 py-3 text-sm font-bold",
         active ? "bg-ink text-on-ink" : "text-ink-bold hover:bg-wash"
       )}
     >

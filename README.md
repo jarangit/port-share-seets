@@ -2,6 +2,12 @@
 
 ไปด้วยกัน — หารถที่ไปทางเดียวกัน หรือแชร์ที่ว่างในรถของคุณ
 
+## Project Docs
+
+- [Project Overview](docs/PROJECT_OVERVIEW.md) - product purpose, core flows, app shell, and route map
+- [Pages Documentation](docs/PAGES.md) - what each page contains, how it works, and how users interact with it
+- [Data Model](docs/DATA_MODEL.md) - domain types, mock data, relationships, and current limitations
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

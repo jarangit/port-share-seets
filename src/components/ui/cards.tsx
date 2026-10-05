@@ -19,23 +19,30 @@ export function ActionCard({
   tone: "ink" | "raised";
   icon: LucideIcon;
   title: string;
-  desc: string;
+  desc?: string;
 }) {
   const dark = tone === "ink";
+  const compact = !desc;
   return (
     <Link
       href={href}
-      className={cn("block rounded-card p-6", dark ? "bg-ink text-on-ink" : "bg-surface text-ink")}
+      className={cn(
+        "block rounded-card",
+        compact ? "p-4" : "p-6",
+        dark ? "bg-ink text-on-ink" : "bg-surface text-ink"
+      )}
     >
-      <Cluster gap="md">
-        <IconBox icon={icon} size="md" tone={dark ? "frost" : "wash"} />
+      <Cluster gap={compact ? "sm" : "md"}>
+        <IconBox icon={icon} size={compact ? "sm" : "md"} tone={dark ? "frost" : "wash"} />
         <Grow>
           <Title as="span" size="card">
             {title}
           </Title>
-          <Text as="span" size="caption" weight="medium" tone={dark ? "mist" : "muted"}>
-            {desc}
-          </Text>
+          {desc ? (
+            <Text as="span" size="caption" weight="medium" tone={dark ? "mist" : "muted"}>
+              {desc}
+            </Text>
+          ) : null}
         </Grow>
         <Icon icon={ChevronRight} size="sm" tone={dark ? "inherit" : "faint"} />
       </Cluster>

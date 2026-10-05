@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 const pageVariants = cva("", {
   variants: {
     variant: {
-      default: "space-y-4 px-4 pt-6 lg:px-0 lg:pt-0",
-      landing: "px-4 pt-10 lg:px-0 lg:pt-16",
+      default: "space-y-3 px-3 pt-4 lg:px-0 lg:pt-0",
+      landing: "px-4 pt-6 lg:px-0 lg:pt-8",
     },
   },
   defaultVariants: { variant: "default" },
@@ -48,8 +48,8 @@ const stackVariants = cva("", {
   variants: {
     gap: {
       sm: "space-y-2",
-      md: "space-y-4",
-      lg: "space-y-6",
+      md: "space-y-3",
+      lg: "space-y-5",
     },
     align: {
       start: "",
@@ -117,7 +117,7 @@ export function Grow({ children }: { children: ReactNode }) {
 
 /* CardGrid — responsive 2-col card grid (my-posts) */
 export function CardGrid({ children }: { children: ReactNode }) {
-  return <div className="grid gap-4 md:grid-cols-2">{children}</div>;
+  return <div className="grid gap-3 md:grid-cols-2">{children}</div>;
 }
 
 /* PairGrid — fixed 2-col tight grid (tabs, stats, form pairs, actions) */
@@ -127,22 +127,22 @@ export function PairGrid({ children }: { children: ReactNode }) {
 
 /* FormGrid — responsive 2-col form layout (post, profile) */
 export function FormGrid({ children }: { children: ReactNode }) {
-  return <div className="grid gap-4 lg:grid-cols-2 lg:items-start">{children}</div>;
+  return <div className="grid gap-3 lg:grid-cols-2 lg:items-start">{children}</div>;
 }
 
 /* DetailLayout — offer detail 3/2 split */
 export function DetailLayout({ main, side }: { main: ReactNode; side: ReactNode }) {
   return (
-    <div className="grid gap-4 lg:grid-cols-5 lg:items-start">
-      <div className="space-y-4 lg:col-span-3">{main}</div>
-      <div className="space-y-4 lg:col-span-2">{side}</div>
+    <div className="grid gap-3 lg:grid-cols-5 lg:items-start">
+      <div className="space-y-3 lg:col-span-3">{main}</div>
+      <div className="space-y-3 lg:col-span-2">{side}</div>
     </div>
   );
 }
 
 /* NarrowCenter — landing hero column */
 export function NarrowCenter({ children }: { children: ReactNode }) {
-  return <div className="mx-auto max-w-[520px] text-center">{children}</div>;
+  return <div className="mx-auto max-w-[420px] text-center">{children}</div>;
 }
 
 /* MobileOnly — rendered below md breakpoint only */

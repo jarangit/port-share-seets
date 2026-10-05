@@ -26,14 +26,14 @@ Card.displayName = "Card";
 const cardBodyVariants = cva("", {
   variants: {
     pad: {
-      /** matches legacy rhythm: 16px sides, 8px top */
-      default: "px-4 pb-4 pt-2",
-      /** even 16px all around */
-      even: "p-4",
-      /** roomy 24px top for profile-style cards */
-      roomy: "px-4 pb-4 pt-6",
+      /** compact rhythm: 12px sides, 8px top */
+      default: "px-3 pb-3 pt-2",
+      /** even 12px all around */
+      even: "p-3",
+      /** roomy top for profile-style cards */
+      roomy: "px-3 pb-3 pt-4",
       /** tall success panel */
-      tall: "px-4 py-10",
+      tall: "px-3 py-8",
     },
   },
   defaultVariants: { pad: "default" },
