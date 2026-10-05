@@ -35,7 +35,7 @@ export function Surface({
 /* SearchPanel — route search container (consumes search component tokens) */
 export function SearchPanel({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-card border border-border-subtle bg-surface p-5 shadow-panel">
+    <div className="rounded-card bg-surface p-4">
       {children}
     </div>
   );

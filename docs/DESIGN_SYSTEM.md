@@ -37,7 +37,7 @@ All three layers live in `src/app/globals.css` and are exposed to Tailwind v4 vi
 
 | Role | Value |
 | --- | --- |
-| Page background | `#FCFCFA` (`--bg-page`) |
+| Page background | `#F1F3F1` (`--bg-page`) |
 | Card surface | `#FFFFFF` (`--bg-surface`) |
 | Primary action | `#101613` (`--brand-primary`, soft black) |
 | Green accent | `#0D6F51` (`--text-brand`) |

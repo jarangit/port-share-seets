@@ -55,7 +55,7 @@ export function TopBarRow({ children }: { children: ReactNode }) {
 
 /* TopBarMenu — dropdown panel under the mobile bar */
 export function TopBarMenu({ children }: { children: ReactNode }) {
-  return <nav className="rounded-b-card border border-t-0 border-border-subtle bg-surface p-4 shadow-card">{children}</nav>;
+  return <nav className="rounded-b-card bg-surface p-4">{children}</nav>;
 }
 
 /* SidebarFrame — sticky desktop sidebar column */
@@ -69,10 +69,10 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
 
 /* SideNav — sidebar nav panel */
 export function SideNav({ children }: { children: ReactNode }) {
-  return <nav className="rounded-card border border-border-subtle bg-surface p-2 shadow-card">{children}</nav>;
+  return <nav className="rounded-card bg-surface p-2">{children}</nav>;
 }
 
 /* SideCard — sidebar promo card */
 export function SideCard({ children }: { children: ReactNode }) {
-  return <div className="rounded-card border border-border-subtle bg-surface p-4 shadow-card">{children}</div>;
+  return <div className="rounded-card bg-surface p-4">{children}</div>;
 }

@@ -104,7 +104,7 @@
 ———————————————————————————————————————————————— */
 :root {
   /* Background */
-  --bg-page: var(--neutral-25);
+  --bg-page: var(--neutral-100);
   --bg-surface: var(--neutral-0);
   --bg-surface-subtle: var(--neutral-50);
   --bg-brand-subtle: var(--green-50);
@@ -190,7 +190,7 @@
   /* SEARCH PANEL */
   --search-bg: var(--bg-surface);
   --search-radius: var(--radius-2xl);
-  --search-padding: var(--space-5);
+  --search-padding: var(--space-4);
   --search-shadow: var(--shadow-md);
 
   /* RIDE CARD */

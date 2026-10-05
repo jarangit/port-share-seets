@@ -27,11 +27,11 @@ export function ActionCard({
     <Link
       href={href}
       className={cn(
-        "block rounded-card border shadow-card",
+        "block rounded-card",
         compact ? "p-4" : "p-6",
         dark
-          ? "border-transparent bg-brand-primary text-on-brand"
-          : "border-border-subtle bg-surface text-primary"
+          ? "bg-brand-primary text-on-brand"
+          : "bg-surface text-primary"
       )}
     >
       <Cluster gap={compact ? "sm" : "md"}>
