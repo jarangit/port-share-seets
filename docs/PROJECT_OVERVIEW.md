@@ -23,8 +23,10 @@ The app does not handle booking, payment, or chat inside the product. Users cont
 
 ### Share Available Seats
 
-1. User opens `/post`.
-2. User enters origin, destination, departure time, available seats, route, pickup point, and contact details.
+1. User opens `/share` from any share CTA.
+2. User chooses Guest or member.
+3. Guest goes to `/post`; member goes to `/register`, then continues to `/post`.
+4. User enters origin, destination, departure time, available seats, route, pickup point, and contact details.
 3. User submits the form.
 4. The app shows a success state.
 5. User can go to `/my-posts` or `/find`.
@@ -59,6 +61,8 @@ The shell contains:
 | Route | Page | Purpose |
 | --- | --- | --- |
 | `/` | Home page | Minimal landing page for choosing find/share action |
+| `/share` | Share choice page | Ask whether to continue as Guest or member before posting |
+| `/register` | Register page | Phone-only member registration before sharing |
 | `/find` | Find ride page | Search and browse available ride offers |
 | `/offer/[id]` | Offer detail page | Show full ride information and contact actions |
 | `/post` | Post ride page | Form for sharing available seats |
@@ -72,6 +76,8 @@ The shell contains:
 - Form submissions update local React state only.
 - Contact actions use `tel:` and LINE external links.
 - Authentication is not implemented; `users.me` acts as the current user.
+- `/register` uses a mock OTP shown on screen; there is no SMS provider yet.
+- Verified member phones are stored in `localStorage` under `pdk-member-phone` only.
 - Seat availability changes in `/my-posts` are local UI state only.
 
 ## Key Code Areas

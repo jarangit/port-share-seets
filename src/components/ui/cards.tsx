@@ -27,19 +27,21 @@ export function ActionCard({
     <Link
       href={href}
       className={cn(
-        "block rounded-card",
+        "block rounded-card border shadow-card",
         compact ? "p-4" : "p-6",
-        dark ? "bg-ink text-on-ink" : "bg-surface text-ink"
+        dark
+          ? "border-transparent bg-brand-primary text-on-brand"
+          : "border-border-subtle bg-surface text-primary"
       )}
     >
       <Cluster gap={compact ? "sm" : "md"}>
-        <IconBox icon={icon} size={compact ? "sm" : "md"} tone={dark ? "frost" : "wash"} />
+        <IconBox icon={icon} size={compact ? "sm" : "md"} tone={dark ? "frost" : "success"} />
         <Grow>
           <Title as="span" size="card">
             {title}
           </Title>
           {desc ? (
-            <Text as="span" size="caption" weight="medium" tone={dark ? "mist" : "muted"}>
+            <Text as="span" size="caption" weight="medium" tone={dark ? "inverted" : "muted"}>
               {desc}
             </Text>
           ) : null}

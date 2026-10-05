@@ -2,14 +2,14 @@ import type { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const surfaceVariants = cva("rounded-card text-ink", {
+const surfaceVariants = cva("rounded-card text-primary", {
   variants: {
     tone: {
       raised: "bg-surface",
-      wash: "bg-wash",
-      ink: "bg-ink text-on-ink",
-      brand: "bg-brand-soft text-on-brand",
-      success: "bg-success-soft text-ink",
+      wash: "bg-surface-subtle",
+      ink: "bg-brand-primary text-on-brand",
+      brand: "border border-border-brand bg-brand-soft text-primary",
+      success: "bg-success-bg text-primary",
     },
     pad: {
       sm: "p-2",
@@ -30,4 +30,13 @@ export function Surface({
   children: ReactNode;
 } & VariantProps<typeof surfaceVariants>) {
   return <div className={cn(surfaceVariants({ tone, pad }))}>{children}</div>;
+}
+
+/* SearchPanel — route search container (consumes search component tokens) */
+export function SearchPanel({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-card border border-border-subtle bg-surface p-5 shadow-panel">
+      {children}
+    </div>
+  );
 }

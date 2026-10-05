@@ -1,6 +1,6 @@
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, Separator } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback, Separator } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Cluster, Stack } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
@@ -15,6 +15,7 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
       <CardBody pad="roomy">
         <Stack gap="sm" align="center">
           <Avatar tone={u.avatarTone} size="xl">
+            {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt={u.name} />}
             <AvatarFallback size="xl">{u.initials}</AvatarFallback>
           </Avatar>
           <Title as="h3" size="name">

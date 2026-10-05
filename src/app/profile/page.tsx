@@ -78,7 +78,7 @@ export default function ProfilePage() {
         </Stack>
       </FormGrid>
 
-      <Stack gap="sm">
+      <Stack gap="md">
         <Cluster justify="between" gap="sm">
           <Title as="h2" size="section">
             เส้นทางที่ฉันแชร์ ({myOffers.length})

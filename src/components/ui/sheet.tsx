@@ -17,14 +17,14 @@ const SheetContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[480px] rounded-t-card bg-surface p-6 pb-8 text-ink",
+        "fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[480px] rounded-t-card bg-surface p-6 pb-8 text-primary",
         className
       )}
       {...props}
     >
-      <div className="mx-auto mb-4 h-2 w-12 rounded-full bg-fill" />
+      <div className="mx-auto mb-4 h-2 w-12 rounded-full bg-border" />
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full bg-wash p-2 text-ink hover:bg-fill">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full bg-interactive p-2 text-primary hover:bg-interactive-hover">
         <X className="h-4 w-4" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
@@ -43,7 +43,7 @@ const SheetTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTM
 SheetTitle.displayName = "SheetTitle";
 const SheetDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
-    <p ref={ref} className={cn("text-[13px] text-ink-soft", className)} {...props} />
+    <p ref={ref} className={cn("text-[13px] text-secondary", className)} {...props} />
   )
 );
 SheetDescription.displayName = "SheetDescription";

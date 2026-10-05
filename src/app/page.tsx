@@ -20,7 +20,7 @@ export default function HomePage() {
               title="หารถ"
             />
             <ActionCard
-              href="/post"
+              href="/share"
               tone="raised"
               icon={CarFront}
               title="แชร์รถ"

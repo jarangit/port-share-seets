@@ -13,7 +13,7 @@ import { TopBarFrame, TopBarRow, TopBarMenu } from "@/components/ui/chrome";
 const items = [
   { href: "/", label: "เริ่มต้น", icon: House, match: ["/"] },
   { href: "/find", label: "หารถ", icon: Search, match: ["/find", "/offer"] },
-  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post"] },
+  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
   { href: "/profile", label: "ฉัน", icon: User, match: ["/profile"] },
 ];
 
@@ -31,6 +31,7 @@ export function MobileTopBar() {
           label={open ? "ปิดเมนู" : "เปิดเมนู"}
           icon={{ on: X, off: Menu }}
           toggled={open}
+          onDark
           onClick={() => setOpen((v) => !v)}
         />
       </TopBarRow>
@@ -49,7 +50,7 @@ export function MobileTopBar() {
               />
             ))}
             <Button width="full" asChild>
-              <Link href="/post" onClick={() => setOpen(false)}>
+              <Link href="/share" onClick={() => setOpen(false)}>
                 <Icon icon={Plus} size="xs" /> แชร์รถ
               </Link>
             </Button>

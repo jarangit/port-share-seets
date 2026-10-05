@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 const pageVariants = cva("", {
   variants: {
     variant: {
-      default: "space-y-3 px-3 pt-4 lg:px-0 lg:pt-0",
-      landing: "px-4 pt-6 lg:px-0 lg:pt-8",
+      default: "space-y-4 px-4 pt-4 lg:px-0 lg:pt-0",
+      landing: "hero-glow px-4 pt-6 lg:px-0 lg:pt-8",
     },
   },
   defaultVariants: { variant: "default" },
@@ -117,7 +117,7 @@ export function Grow({ children }: { children: ReactNode }) {
 
 /* CardGrid — responsive 2-col card grid (my-posts) */
 export function CardGrid({ children }: { children: ReactNode }) {
-  return <div className="grid gap-3 md:grid-cols-2">{children}</div>;
+  return <div className="grid gap-4 md:grid-cols-2">{children}</div>;
 }
 
 /* PairGrid — fixed 2-col tight grid (tabs, stats, form pairs, actions) */

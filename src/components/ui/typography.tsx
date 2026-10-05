@@ -67,6 +67,7 @@ const textTones = {
   faint: "text-faint",
   mist: "text-mist",
   inverted: "text-on-ink",
+  danger: "text-danger",
 } as const;
 
 const textWeights = {

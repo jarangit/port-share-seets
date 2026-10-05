@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Stack } from "@/components/ui/layout";
-import { Surface } from "@/components/ui/surface";
+import { SearchPanel } from "@/components/ui/surface";
 import { Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
 import { SegmentedControl } from "@/components/ui/controls";
@@ -38,7 +38,7 @@ export function RideOfferFeed() {
 
   return (
     <Stack gap="md">
-      <Surface tone="raised" pad="md">
+      <SearchPanel>
         <Stack gap="sm">
           <Input
             value={to}
@@ -47,7 +47,7 @@ export function RideOfferFeed() {
           />
           <SegmentedControl options={dayTabs} value={day} onChange={setDay} />
         </Stack>
-      </Surface>
+      </SearchPanel>
 
       <Text size="caption" tone="muted" weight="semibold">
         {day === "today" ? "วันนี้" : "พรุ่งนี้"} •{" "}
@@ -75,7 +75,7 @@ export function RideOfferFeed() {
           }
         />
       ) : (
-        <Stack gap="md">
+        <Stack gap="lg">
           {results.map((o) => (
             <RideOfferCard key={o.id} offer={o} />
           ))}

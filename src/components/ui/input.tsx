@@ -6,7 +6,7 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
     <input
       ref={ref}
       className={cn(
-        "flex h-11 w-full rounded-card bg-fill/70 px-3 text-sm font-medium text-ink outline-none placeholder:text-muted focus:bg-fill",
+        "flex h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm font-medium text-primary outline-none placeholder:text-disabled focus:border-border-brand",
         className
       )}
       {...props}
@@ -20,7 +20,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttribu
     <textarea
       ref={ref}
       className={cn(
-        "flex min-h-[76px] w-full rounded-card bg-fill/70 px-3 py-3 text-sm text-ink outline-none placeholder:text-muted focus:bg-fill",
+        "flex min-h-[76px] w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-primary outline-none placeholder:text-disabled focus:border-border-brand",
         className
       )}
       {...props}

@@ -17,7 +17,7 @@ Minimal landing page that lets users choose their main intent: find a ride or sh
 ### User Actions
 
 - Click `หารถ` to go to `/find`.
-- Click `แชร์รถ` to go to `/post`.
+- Click `แชร์รถ` to go to `/share`.
 
 ### Main Components
 
@@ -39,6 +39,99 @@ No local state. The page is a static navigation choice.
 
 Keep this page minimal. If stats or extra links are added later, make sure they do not duplicate the two main CTAs.
 
+## `/share` - Share Choice Page
+
+### Purpose
+
+Ask users whether to continue as Guest or member before entering the share form.
+
+### UI Sections
+
+- Back link to `/`
+- Title: `จะลงข้อมูลแบบไหน?`
+- Guest action card linking to `/post`
+- Member action card linking to `/register`
+- Helper note that Guest needs no password
+
+### User Actions
+
+- Click `Guest` to go to `/post`.
+- Click `สมาชิก` to go to `/register`.
+
+### Main Components
+
+- `Page` with `variant="landing"`
+- `NarrowCenter`
+- `Stack`
+- `Title`
+- `Text`
+- `BackLink`
+- `ActionCard`
+
+### Data Source
+
+No runtime data is used.
+
+### Behavior / State
+
+No local state. Static navigation choice.
+
+### Notes for Future Changes
+
+When real auth exists, `/register` should create a verified member account instead of showing a local success state.
+
+## `/register` - Register Page
+
+### Purpose
+
+Let users register as a member with phone OTP verification before sharing a ride.
+
+### UI Sections
+
+- Back link to `/share`
+- Title: `สมัครสมาชิก`
+- Helper text about phone-only trust
+- Step 1: phone form card with `ส่งรหัส OTP` button
+- Step 2: OTP form card with 6-digit input, demo code hint, resend timer, and change-phone action
+- Step 3: success state with CTA to `/post`
+
+### User Actions
+
+1. Enter phone number and request an OTP.
+2. Enter the 6-digit OTP code.
+3. Resend the code after the 60-second cooldown if needed.
+4. Change phone number if the number was typed wrong.
+5. After success, click `ไปแชร์รถเลย` to go to `/post`.
+
+### Main Components
+
+- `Page` with `variant="landing"`
+- `NarrowCenter`
+- `Card` / `CardBody`
+- `Field`
+- `Input`
+- `Button`
+- `BackLink`
+- `IconBox`
+
+### Data Source
+
+No backend is used. The OTP is generated in local React state and shown as a demo code on screen because there is no SMS provider yet. On success the verified phone is saved to `localStorage` under `pdk-member-phone`.
+
+### Behavior / State
+
+- This is a client page.
+- Local `step` state controls `phone`, `otp`, and `done` screens.
+- Phone numbers must have at least 9 digits.
+- OTP must be exactly the generated 6-digit code.
+- After 5 wrong attempts the user must request a new code.
+- Resend is disabled during the 60-second cooldown.
+- Registration is not persisted to any backend or user store.
+
+### Notes for Future Changes
+
+Replace the mock OTP with a real SMS OTP provider: send code from an API route, verify server-side, enforce rate limits, then create the member account and route verified members into `/post` with their profile prefilled.
+
 ## `/find` - Find Ride Page
 
 ### Purpose
@@ -48,17 +141,18 @@ Let users search and browse available ride offers.
 ### UI Sections
 
 - Page title: `จะไปที่ไหน?`
-- Search/filter panel
+- Search panel (white card, destination input, day pills)
 - Day segmented control: วันนี้ / พรุ่งนี้
 - Result count text
-- Ride offer list
+- Ride card list (whole card links to detail, no contact buttons in list)
 - Empty state when no offers match
 
 ### User Actions
 
 - Type a destination or route keyword.
 - Switch between วันนี้ and พรุ่งนี้.
-- Use ride cards to call, open LINE, or view details.
+- Tap a ride card to open its detail page.
+- Contact the driver from the detail page.
 - Clear search from the empty state when a query has no results.
 
 ### Main Components
@@ -99,11 +193,11 @@ Show full information for one ride offer and provide clear contact actions.
 - Back link to `/find`
 - Main route card
 - Route meta: date and departure time
-- Seat availability badge
-- Route timeline
+- Seat availability badge (soft green pill)
+- Route timeline (green origin dot, green destination dot)
 - Pickup points
 - Seat and vehicle metric cards
-- Optional driver note
+- Optional driver note on soft green surface
 - Driver summary row
 - Contact card
 - Driver trust profile card
@@ -153,7 +247,7 @@ When backend data exists, replace static params and `getOffer(id)` with data fet
 
 ### Purpose
 
-Let drivers share available seats in their car.
+Let drivers share available seats in their car. Users normally arrive here after choosing Guest on `/share`.
 
 ### UI Sections
 

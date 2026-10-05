@@ -19,8 +19,8 @@ export function DesktopHeader() {
           <Text size="meta" tone="mist" weight="semibold">
             วันนี้มีรถ 6 คัน
           </Text>
-          <Button variant="warning" size="sm" asChild>
-            <Link href="/post">
+          <Button variant="secondary" size="sm" asChild>
+            <Link href="/share">
               <Icon icon={Plus} size="xs" /> แชร์รถ
             </Link>
           </Button>

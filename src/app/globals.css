@@ -3,95 +3,256 @@
 /* ————————————————————————————————————————————————
    LAYER 1 · PRIMITIVE TOKENS (raw values)
    Plain :root vars only — no Tailwind utilities are
-   generated from these, so feature code cannot reach
-   them directly. Semantic tokens below are the only
-   way in.
+   generated from these, so feature code must NOT
+   reach them directly. Use semantic tokens instead.
 ———————————————————————————————————————————————— */
 :root {
-  --p-ink: #09090b;
-  --p-ink-hover: #27272a;
-  --p-ink-active: #18181b;
-  --p-ink-bold: #3f3f46;
-  --p-ink-soft: #52525b;
-  --p-ink-faint: #71717a;
-  --p-ink-ghost: #a1a1aa;
-  --p-ink-mist: #d4d4d8;
-  --p-on-ink: #fafafa;
+  /* PRIMITIVE — GREEN (primary DNA) */
+  --green-50: #f0faf6;
+  --green-100: #e2f6ed;
+  --green-200: #c8eddd;
+  --green-300: #9fddc5;
+  --green-400: #5fc6a0;
+  --green-500: #20ad7c;
+  --green-600: #118a63;
+  --green-700: #0d6f51;
+  --green-800: #0c5943;
+  --green-900: #0b4938;
 
-  --p-paper: #ffffff;
-  --p-canvas: #fafaf9;
-  --p-wash: #f4f4f5;
-  --p-fill: #e4e4e7;
-  --p-app: #e4e4e7;
+  /* PRIMITIVE — NEUTRAL */
+  --neutral-0: #ffffff;
+  --neutral-25: #fcfcfa;
+  --neutral-50: #f8f9f7;
+  --neutral-100: #f1f3f1;
+  --neutral-200: #e5e8e5;
+  --neutral-300: #d4d8d5;
+  --neutral-400: #a5aaa7;
+  --neutral-500: #7b817e;
+  --neutral-600: #5d6360;
+  --neutral-700: #3c423f;
+  --neutral-800: #242a27;
+  --neutral-900: #101613;
 
-  --p-brand: #fbbf24;
-  --p-brand-deep: #f59e0b;
-  --p-brand-soft: #fcd34d;
-  --p-success: #10b981;
-  --p-success-soft: #34d399;
-  --p-verified: #059669;
-  --p-danger: #dc2626;
-  --p-danger-hover: #ef4444;
-  --p-overlay: rgb(0 0 0 / 0.6);
+  /* PRIMITIVE — BRAND IDENTITY (logo moments only) */
+  --yellow-400: #ffd24a;
+  --yellow-500: #ffc629;
+  --yellow-600: #d99e00;
 
+  /* PRIMITIVE — LOCATION / STATUS */
+  --orange-500: #ff6846;
+  --red-500: #ef4444;
+  --red-600: #dc2626;
+
+  /* PRIMITIVE — OVERLAY */
+  --p-overlay: rgb(16 22 19 / 0.5);
+
+  /* PRIMITIVE — AVATAR TONES */
   --p-avatar-coal: #262626;
   --p-avatar-bark: #44403c;
   --p-avatar-slate: #3f3f46;
 
-  --p-radius-card: 18px;
-  --p-radius-tile: 16px;
+  /* PRIMITIVE — SPACING */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
 
-  --font-sans: "Google Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+  /* PRIMITIVE — RADIUS */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* PRIMITIVE — TYPOGRAPHY */
+  --font-sans:
+    "Noto Sans Thai", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display:
+    "Noto Sans Thai", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 36px;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* PRIMITIVE — SHADOW */
+  --shadow-xs: 0 1px 2px rgb(16 22 19 / 0.03);
+  --shadow-sm: 0 2px 8px rgb(16 22 19 / 0.04);
+  --shadow-md: 0 8px 24px rgb(16 22 19 / 0.06);
 }
 
 /* ————————————————————————————————————————————————
    LAYER 2 · SEMANTIC TOKENS (meaning, not values)
-   These are mapped into Tailwind via @theme inline,
-   so `src/components/ui/**` — and only that layer —
-   may use utilities like `bg-surface` or `text-muted`.
+   Mapped into Tailwind via @theme inline below, so
+   `src/components/ui/**` consumes these — never the
+   primitive layer above.
 ———————————————————————————————————————————————— */
 :root {
-  --app: var(--p-app);
-  --surface: var(--p-paper);
-  --surface-warm: var(--p-canvas);
-  --wash: var(--p-wash);
-  --fill: var(--p-fill);
+  /* Background */
+  --bg-page: var(--neutral-25);
+  --bg-surface: var(--neutral-0);
+  --bg-surface-subtle: var(--neutral-50);
+  --bg-brand-subtle: var(--green-50);
 
-  --ink: var(--p-ink);
-  --ink-hover: var(--p-ink-hover);
-  --ink-active: var(--p-ink-active);
-  --ink-bold: var(--p-ink-bold);
-  --ink-soft: var(--p-ink-soft);
-  --muted: var(--p-ink-faint);
-  --faint: var(--p-ink-ghost);
-  --mist: var(--p-ink-mist);
-  --on-ink: var(--p-on-ink);
+  /* Text */
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-tertiary: var(--neutral-500);
+  --text-disabled: var(--neutral-400);
+  --text-brand: var(--green-700);
+  --text-on-brand: var(--neutral-0);
 
-  --brand: var(--p-brand);
-  --brand-deep: var(--p-brand-deep);
-  --brand-soft: var(--p-brand-soft);
-  --on-brand: var(--p-ink);
-  --success: var(--p-success);
-  --success-soft: var(--p-success-soft);
-  --on-success: var(--p-paper);
-  --verified: var(--p-verified);
-  --danger: var(--p-danger);
-  --danger-hover: var(--p-danger-hover);
-  --on-danger: var(--p-paper);
+  /* Border */
+  --border-default: var(--neutral-200);
+  --border-subtle: var(--neutral-100);
+  --border-brand: var(--green-300);
+
+  /* Brand */
+  --brand-primary: var(--neutral-900);
+  --brand-primary-hover: var(--neutral-800);
+  --brand-soft: var(--green-50);
+  --brand-identity: var(--yellow-500);
+  --brand-identity-deep: var(--yellow-600);
+
+  /* Status */
+  --status-success: var(--green-500);
+  --status-success-bg: var(--green-50);
+  --status-location: var(--orange-500);
+
+  /* Interactive */
+  --interactive-primary: var(--neutral-900);
+  --interactive-primary-hover: var(--neutral-800);
+  --interactive-secondary: var(--neutral-100);
+  --interactive-secondary-hover: var(--neutral-200);
+
+  /* Focus */
+  --focus-ring: var(--green-300);
+
+  /* Danger (form errors only) */
+  --danger: var(--red-600);
+  --danger-hover: var(--red-500);
+  --on-danger: var(--neutral-0);
+
+  /* Verified */
+  --verified: var(--green-600);
+
+  /* Overlay */
   --overlay: var(--p-overlay);
 
-  --radius-card: var(--p-radius-card);
-  --radius-tile: var(--p-radius-tile);
+  /* Radius */
+  --radius-card: var(--radius-2xl);
+  --radius-tile: var(--radius-lg);
+
+  /* ——— Legacy aliases (do not use in new code) ——— */
+  --app: var(--bg-page);
+  --surface: var(--bg-surface);
+  --surface-warm: var(--bg-surface-subtle);
+  --wash: var(--interactive-secondary);
+  --fill: var(--neutral-200);
+  --ink: var(--text-primary);
+  --ink-hover: var(--neutral-800);
+  --ink-active: var(--neutral-900);
+  --ink-bold: var(--neutral-700);
+  --ink-soft: var(--text-secondary);
+  --muted: var(--text-secondary);
+  --faint: var(--neutral-400);
+  --mist: var(--neutral-200);
+  --on-ink: var(--neutral-0);
+  --brand: var(--brand-identity);
+  --brand-deep: var(--brand-identity-deep);
+  --on-brand: var(--text-on-brand);
+  --success: var(--status-success);
+  --success-soft: var(--status-success-bg);
+  --on-success: var(--neutral-0);
+}
+
+/* ————————————————————————————————————————————————
+   LAYER 3 · COMPONENT TOKENS
+   Per-component decisions composed from semantic
+   tokens. UI primitives consume these.
+———————————————————————————————————————————————— */
+:root {
+  /* SEARCH PANEL */
+  --search-bg: var(--bg-surface);
+  --search-radius: var(--radius-2xl);
+  --search-padding: var(--space-5);
+  --search-shadow: var(--shadow-md);
+
+  /* RIDE CARD */
+  --ride-card-bg: var(--bg-surface);
+  --ride-card-radius: var(--radius-2xl);
+  --ride-card-padding: var(--space-4);
+  --ride-card-gap: var(--space-4);
+  --ride-card-shadow: var(--shadow-sm);
+
+  /* SEAT BADGE */
+  --seat-badge-bg: var(--status-success-bg);
+  --seat-badge-text: var(--green-700);
+  --seat-badge-radius: var(--radius-full);
+
+  /* AVATAR */
+  --avatar-size: 48px;
+  --avatar-radius: var(--radius-full);
+
+  /* ICON BUTTON */
+  --icon-button-size: 44px;
+  --icon-button-bg: var(--neutral-100);
+  --icon-button-radius: var(--radius-full);
+
+  /* DATE TAB */
+  --date-tab-height: 48px;
+  --date-tab-radius: var(--radius-full);
+  --date-tab-active-bg: var(--interactive-primary);
+  --date-tab-active-text: var(--text-on-brand);
+  --date-tab-default-bg: var(--neutral-50);
+  --date-tab-default-text: var(--text-secondary);
 }
 
 @theme inline {
+  /* New semantic utilities */
+  --color-page: var(--bg-page);
+  --color-surface-subtle: var(--bg-surface-subtle);
+  --color-brand-subtle: var(--bg-brand-subtle);
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-tertiary: var(--text-tertiary);
+  --color-disabled: var(--text-disabled);
+  --color-text-brand: var(--text-brand);
+  --color-on-brand: var(--text-on-brand);
+  --color-border: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-brand: var(--border-brand);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-hover: var(--brand-primary-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-identity: var(--brand-identity);
+  --color-interactive: var(--interactive-secondary);
+  --color-interactive-hover: var(--interactive-secondary-hover);
+  --color-success-bg: var(--status-success-bg);
+  --color-location: var(--status-location);
+  --color-focus-ring: var(--focus-ring);
+
+  /* Legacy utilities (kept working, prefer new names) */
   --color-app: var(--app);
   --color-surface: var(--surface);
   --color-surface-warm: var(--surface-warm);
   --color-wash: var(--wash);
   --color-fill: var(--fill);
-
   --color-ink: var(--ink);
   --color-ink-hover: var(--ink-hover);
   --color-ink-active: var(--ink-active);
@@ -101,14 +262,11 @@
   --color-faint: var(--faint);
   --color-mist: var(--mist);
   --color-on-ink: var(--on-ink);
-
   --color-brand: var(--brand);
   --color-brand-deep: var(--brand-deep);
-  --color-brand-soft: var(--brand-soft);
-  --color-on-brand: var(--on-brand);
+  --color-on-success: var(--on-success);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
-  --color-on-success: var(--on-success);
   --color-verified: var(--verified);
   --color-danger: var(--danger);
   --color-danger-hover: var(--danger-hover);
@@ -118,28 +276,45 @@
   --radius-card: var(--radius-card);
   --radius-tile: var(--radius-tile);
 
+  --shadow-card: var(--ride-card-shadow);
+  --shadow-panel: var(--search-shadow);
+
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
 }
 
-* {
-  box-shadow: none !important;
-  text-shadow: none !important;
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
-  background: var(--app);
-  color: var(--ink);
+  background: var(--bg-page);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
+/* Soft hero glow — green brand moment on landing pages only */
+.hero-glow {
+  background: radial-gradient(60% 100% at 50% 0%, var(--neutral-100) 0%, transparent 72%);
+}
+
 /* flat mock map texture — solid + grid lines only, no gradients/shadows */
 .map-grid {
-  background-color: var(--wash);
+  background-color: var(--interactive-secondary);
   background-image:
-    linear-gradient(to right, rgb(0 0 0 / 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(0 0 0 / 0.07) 1px, transparent 1px);
+    linear-gradient(to right, rgb(16 22 19 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(16 22 19 / 0.06) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 

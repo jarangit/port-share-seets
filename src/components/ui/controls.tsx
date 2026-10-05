@@ -1,6 +1,5 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { PairGrid } from "@/components/ui/layout";
 import { Icon } from "@/components/ui/icon";
 import type { LucideIcon } from "lucide-react";
 
@@ -15,34 +14,37 @@ export function SegmentedControl<T extends string>({
   onChange: (id: T) => void;
 }) {
   return (
-    <PairGrid>
+    <div className="grid grid-cols-2 gap-1 rounded-full bg-interactive p-1" role="group">
       {options.map((o) => (
         <button
           key={o.id}
           type="button"
           onClick={() => onChange(o.id)}
+          aria-pressed={value === o.id}
           className={cn(
-            "rounded-card px-4 py-2 text-[13px] font-bold",
-            value === o.id ? "bg-ink text-on-ink" : "bg-wash text-ink-soft"
+            "h-12 rounded-full px-4 text-[13px] font-bold",
+            value === o.id ? "bg-brand-primary text-on-brand shadow-xs" : "text-secondary"
           )}
         >
           {o.label}
         </button>
       ))}
-    </PairGrid>
+    </div>
   );
 }
 
-/* IconButton — glass tile button (mobile menu toggle) */
+/* IconButton — circular button (mobile menu toggle) */
 export function IconButton({
   label,
   icon,
   toggled = false,
+  onDark = false,
   onClick,
 }: {
   label: string;
   icon: { on: LucideIcon; off: LucideIcon };
   toggled?: boolean;
+  onDark?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -50,7 +52,10 @@ export function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="flex h-10 w-10 items-center justify-center rounded-tile bg-on-ink/10 text-on-ink"
+      className={cn(
+        "flex h-11 w-11 items-center justify-center rounded-full",
+        onDark ? "bg-interactive text-primary" : "bg-interactive text-primary"
+      )}
     >
       <Icon icon={toggled ? icon.on : icon.off} size="sm" />
     </button>

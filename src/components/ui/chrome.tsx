@@ -25,7 +25,7 @@ export function PageBody({ children }: { children: ReactNode }) {
 
 /* DesktopHeaderFrame — top bar visible on lg+ */
 export function DesktopHeaderFrame({ children }: { children: ReactNode }) {
-  return <header className="hidden bg-ink text-on-ink lg:block">{children}</header>;
+  return <header className="hidden border-b border-border-subtle bg-surface text-primary lg:block">{children}</header>;
 }
 
 /* HeaderInner — centered header content row */
@@ -47,7 +47,7 @@ export function TopBarFrame({ children }: { children: ReactNode }) {
 /* TopBarRow — the dark mobile bar itself */
 export function TopBarRow({ children }: { children: ReactNode }) {
   return (
-    <header className="flex h-14 items-center justify-between bg-ink px-4 text-on-ink">
+    <header className="flex h-14 items-center justify-between border-b border-border-subtle bg-surface px-4 text-primary">
       {children}
     </header>
   );
@@ -55,7 +55,7 @@ export function TopBarRow({ children }: { children: ReactNode }) {
 
 /* TopBarMenu — dropdown panel under the mobile bar */
 export function TopBarMenu({ children }: { children: ReactNode }) {
-  return <nav className="rounded-b-card bg-surface p-4">{children}</nav>;
+  return <nav className="rounded-b-card border border-t-0 border-border-subtle bg-surface p-4 shadow-card">{children}</nav>;
 }
 
 /* SidebarFrame — sticky desktop sidebar column */
@@ -69,10 +69,10 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
 
 /* SideNav — sidebar nav panel */
 export function SideNav({ children }: { children: ReactNode }) {
-  return <nav className="rounded-card bg-surface p-2">{children}</nav>;
+  return <nav className="rounded-card border border-border-subtle bg-surface p-2 shadow-card">{children}</nav>;
 }
 
 /* SideCard — sidebar promo card */
 export function SideCard({ children }: { children: ReactNode }) {
-  return <div className="rounded-card bg-surface p-4">{children}</div>;
+  return <div className="rounded-card border border-border-subtle bg-surface p-4 shadow-card">{children}</div>;
 }

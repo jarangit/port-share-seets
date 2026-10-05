@@ -11,10 +11,10 @@ export function RouteTimeline({ points }: { points: string[] }) {
             <span
               className={cn(
                 "mt-2 h-4 w-4 shrink-0 rounded-full",
-                i === 0 ? "bg-ink" : i === arr.length - 1 ? "bg-success" : "bg-mist"
+                i === 0 ? "bg-brand-primary" : i === arr.length - 1 ? "bg-success" : "bg-border"
               )}
             />
-            {i < arr.length - 1 && <span className="my-2 w-1 flex-1 bg-fill" />}
+            {i < arr.length - 1 && <span className="my-2 w-1 flex-1 bg-border" />}
           </div>
           <div className="pb-4">
             <Text size="body" weight="semibold">

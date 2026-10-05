@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
 import type { AvatarTone } from "@/lib/types";
 
 const avatarToneClass: Record<AvatarTone, string> = {
-  ink: "bg-ink",
+  ink: "bg-brand-primary",
   slate: "bg-[#3f3f46]",
   coal: "bg-[#262626]",
   bark: "bg-[#44403c]",
 };
 
-const avatarVariants = cva("relative flex shrink-0 overflow-hidden rounded-card", {
+const avatarVariants = cva("relative flex shrink-0 overflow-hidden rounded-full", {
   variants: {
     size: {
       md: "h-10 w-10",
@@ -39,6 +39,14 @@ const Avatar = React.forwardRef<React.ElementRef<typeof AvatarPrimitive.Root>, A
 );
 Avatar.displayName = "Avatar";
 
+const AvatarImage = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Image>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Image ref={ref} className={cn("h-full w-full object-cover", className)} {...props} />
+));
+AvatarImage.displayName = "AvatarImage";
+
 const avatarFallbackVariants = cva("flex h-full w-full items-center justify-center font-bold text-on-ink", {
   variants: {
     size: {
@@ -64,8 +72,8 @@ const Separator = React.forwardRef<
   React.ElementRef<typeof SeparatorPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
 >((props, ref) => (
-  <SeparatorPrimitive.Root ref={ref} orientation="horizontal" className="my-4 h-px w-full shrink-0 bg-fill" {...props} />
+  <SeparatorPrimitive.Root ref={ref} orientation="horizontal" className="my-4 h-px w-full shrink-0 bg-border" {...props} />
 ));
 Separator.displayName = "Separator";
 
-export { Avatar, AvatarFallback, Separator };
+export { Avatar, AvatarImage, AvatarFallback, Separator };

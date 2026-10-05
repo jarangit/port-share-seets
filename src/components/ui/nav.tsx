@@ -23,8 +23,8 @@ export function NavItem({
       href={href}
       onClick={onClick}
       className={cn(
-        "flex items-center gap-3 rounded-tile px-3 py-3 text-sm font-bold",
-        active ? "bg-ink text-on-ink" : "text-ink-bold hover:bg-wash"
+        "flex items-center gap-3 rounded-full px-4 py-3 text-sm font-bold",
+        active ? "bg-brand-primary text-on-brand" : "text-secondary hover:bg-interactive"
       )}
     >
       <Icon icon={icon} size="sm" />
@@ -36,7 +36,7 @@ export function NavItem({
 /* BackLink — “กลับ” links above page headers */
 export function BackLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="inline-flex items-center gap-2 text-[13px] font-bold text-ink-soft">
+    <Link href={href} className="inline-flex items-center gap-2 text-[13px] font-bold text-secondary">
       <Icon icon={ChevronLeft} size="xs" />
       {label}
     </Link>
@@ -46,7 +46,26 @@ export function BackLink({ href, label }: { href: string; label: string }) {
 /* TextLink — small inline “ดูทั้งหมด” style link */
 export function TextLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center gap-2 text-xs font-bold text-ink">
+    <Link href={href} className="inline-flex items-center gap-2 text-xs font-bold text-primary">
+      {children}
+    </Link>
+  );
+}
+
+/* CardLink — block-level link wrapper so whole cards are tappable.
+   Keeps layout margins (e.g. Stack space-y) working, since a plain
+   inline <a> would ignore vertical margins. */
+export function CardLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link href={href} aria-label={label} className="block">
       {children}
     </Link>
   );
@@ -57,7 +76,7 @@ export function DetailLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="flex items-center justify-center gap-2 py-2 text-[12px] font-bold text-faint"
+      className="flex items-center justify-center gap-2 py-2 text-[12px] font-bold text-tertiary"
     >
       {label}
       <Icon icon={ChevronRight} size="xs" />

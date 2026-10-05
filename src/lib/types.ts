@@ -5,6 +5,7 @@ export interface UserProfile {
   name: string;
   avatarTone: AvatarTone;
   initials: string;
+  avatarUrl?: string;
   verifiedPhone: boolean;
   verifiedId: boolean;
   memberSince: string;

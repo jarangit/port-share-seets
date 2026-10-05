@@ -11,7 +11,7 @@ import { SidebarFrame, SideNav, SideCard } from "@/components/ui/chrome";
 
 const items = [
   { href: "/find", label: "หารถ", icon: Search, match: ["/find", "/offer"] },
-  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post"] },
+  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
   { href: "/profile", label: "ฉัน", icon: User, match: ["/profile"] },
 ];
 
@@ -35,7 +35,7 @@ export function DesktopSidebar() {
         <Stack gap="md">
           <Text weight="bold">มีที่ว่างในรถไหม?</Text>
           <Button width="full" size="sm" asChild>
-            <Link href="/post">
+            <Link href="/share">
               <Icon icon={Plus} size="xs" /> แชร์ที่ว่าง
             </Link>
           </Button>

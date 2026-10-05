@@ -16,6 +16,7 @@ export interface UserProfile {
   name: string;
   avatarTone: AvatarTone;
   initials: string;
+  avatarUrl?: string;
   verifiedPhone: boolean;
   verifiedId: boolean;
   memberSince: string;
@@ -34,6 +35,7 @@ export interface UserProfile {
 | `name` | Display name shown on cards/profile |
 | `avatarTone` | Visual tone used by avatar UI |
 | `initials` | Thai initials displayed in avatar fallback |
+| `avatarUrl` | Optional photo URL; Radix Avatar falls back to initials if it fails to load |
 | `verifiedPhone` | Whether phone is verified |
 | `verifiedId` | Whether identity document is verified |
 | `memberSince` | Human-readable membership date |
@@ -51,7 +53,9 @@ Users live in `src/data/users.ts`.
 | `ton` | Driver | Verified phone and ID |
 | `bank` | Driver | Verified phone and ID |
 | `bee` | Driver | Verified phone, not verified ID |
-| `me` | Current user | Used by `/profile` and `myOffers` |
+| `me` | Current user | Used by `/profile` and `myOffers`; no photo, shows initials |
+
+Mock driver avatars are illustrated characters from the DiceBear adventurer set (free API, seeded per driver, no real faces). Replace with real uploads or a local `/public/avatars` folder before production.
 
 ## `RideOffer`
 
