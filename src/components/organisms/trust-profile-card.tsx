@@ -4,9 +4,9 @@ import { Avatar, AvatarImage, AvatarFallback, Separator } from "@/components/ui/
 import { Badge } from "@/components/ui/badge";
 import { Cluster, Stack } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
-import { Icon } from "@/components/ui/icon";
+import { Icon, LineIcon } from "@/components/ui/icon";
 import { InfoRow, ContactRow } from "@/components/ui/rows";
-import { Flag, Ban, CarFront, Phone, MessageCircle, BadgeCheck } from "lucide-react";
+import { Flag, Ban, CarFront, Phone, BadgeCheck } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
 
 export function TrustProfileCard({ user: u }: { user: UserProfile }) {
@@ -63,7 +63,7 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
                 </Text>
               </ContactRow>
               {u.lineId && (
-                <ContactRow icon={MessageCircle}>
+                <ContactRow icon={LineIcon}>
                   <Text as="span" weight="bold">
                     LINE: {u.lineId}
                   </Text>

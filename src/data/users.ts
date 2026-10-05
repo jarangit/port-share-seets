@@ -14,6 +14,7 @@ export const users: Record<string, UserProfile> = {
     vehicle: { model: "Toyota Corolla", color: "ขาว", plate: "กข 4521" },
     phone: "081-234-5678",
     lineId: "ton.share",
+    facebookUrl: "https://www.facebook.com/ton.share",
   },
   bank: {
     id: "u-bank",
@@ -28,6 +29,7 @@ export const users: Record<string, UserProfile> = {
     vehicle: { model: "Honda City", color: "เทา", plate: "งง 8830" },
     phone: "089-876-5432",
     lineId: "bank.drive",
+    facebookUrl: "https://www.facebook.com/bank.drive",
   },
   bee: {
     id: "u-bee",
@@ -42,6 +44,7 @@ export const users: Record<string, UserProfile> = {
     vehicle: { model: "Mazda 2", color: "แดง", plate: "ขค 1123" },
     phone: "082-345-6789",
     lineId: "bee.go",
+    facebookUrl: "https://www.facebook.com/bee.go",
   },
   me: {
     id: "u-me",
@@ -55,5 +58,6 @@ export const users: Record<string, UserProfile> = {
     vehicle: { model: "Toyota Yaris", color: "ขาว", plate: "กท 7788" },
     phone: "086-123-4567",
     lineId: "me.share",
+    facebookUrl: "https://www.facebook.com/share/1GiMNm5bwv/?mibextid=wwXIfr",
   },
 };

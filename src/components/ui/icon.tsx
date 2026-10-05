@@ -2,6 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 import { CarFront } from "lucide-react";
+import { FaLine } from "react-icons/fa";
 
 const iconSizes = {
   xs: "h-4 w-4",
@@ -87,6 +88,10 @@ export function IconBox({
     </span>
   );
 }
+
+/* LineIcon — LINE brand icon from react-icons (lucide-react no longer
+   ships brand icons). Cast to plug into the app's Icon / ContactRow API. */
+export const LineIcon = FaLine as unknown as LucideIcon;
 
 /* BrandMark — logo tile + wordmark lockup */
 export function BrandMark({ name, compact = false }: { name: string; compact?: boolean }) {

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Cluster } from "@/components/ui/layout";
-import { Phone, MessageCircle } from "lucide-react";
+import { Phone } from "lucide-react";
+import { LineIcon } from "@/components/ui/icon";
 
 export function ContactActions({
   phone,
@@ -25,7 +26,7 @@ export function ContactActions({
       </Button>
       <Button size={size} width="grow" variant="secondary" asChild>
         <a href={lineHref} target="_blank" rel="noreferrer">
-          <Icon icon={MessageCircle} size="xs" /> LINE
+          <Icon icon={LineIcon} size="xs" /> LINE
         </a>
       </Button>
     </Cluster>

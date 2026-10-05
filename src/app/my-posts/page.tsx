@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Page, PageHeader, Stack, Cluster, CardGrid } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
-import { Icon } from "@/components/ui/icon";
+import { Icon, LineIcon } from "@/components/ui/icon";
 import { myOffers } from "@/data/rides";
-import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone, MessageCircle, CarFront } from "lucide-react";
+import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone, CarFront } from "lucide-react";
 
 export default function MyPostsPage() {
   const [closed, setClosed] = useState<string[]>([]);
@@ -62,7 +62,7 @@ export default function MyPostsPage() {
                       </Text>
                     </Cluster>
                     <Cluster gap="sm">
-                      <Icon icon={MessageCircle} size="xs" />
+                      <Icon icon={LineIcon} size="xs" />
                       <Text as="span" size="caption" tone="muted">
                         {o.contact.lineId}
                       </Text>

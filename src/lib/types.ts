@@ -13,6 +13,7 @@ export interface UserProfile {
   vehicle?: { model: string; color: string; plate: string };
   phone?: string;
   lineId?: string;
+  facebookUrl?: string;
 }
 
 export interface RideOffer {

@@ -4,19 +4,17 @@ import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/avatar";
-import { Page, Stack, Cluster, PairGrid, DetailLayout } from "@/components/ui/layout";
+import { Page, Stack, Cluster, Grow } from "@/components/ui/layout";
 import { Surface } from "@/components/ui/surface";
 import { Title, Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
-import { ContactRow } from "@/components/ui/rows";
 import { BackLink } from "@/components/ui/nav";
 import { RouteTimeline } from "@/components/ui/route-timeline";
-import { MetricCard } from "@/components/ui/cards";
 import { UserRow } from "@/components/atoms/user-row";
-import { ContactActions } from "@/components/molecules/contact-actions";
+import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
 import { getOffer, rideOffers, myOffers } from "@/data/rides";
-import { Clock3, MapPin, Users, CarFront, Phone, MessageCircle, ArrowRight } from "lucide-react";
+import { Clock3, ArrowRight, ChevronDown } from "lucide-react";
 
 export function generateStaticParams() {
   return [...rideOffers, ...myOffers].map((o) => ({ id: o.id }));
@@ -33,9 +31,8 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ id
     <Page>
       <BackLink href="/find" label="กลับไปดูรถทั้งหมด" />
 
-      <DetailLayout
-        main={
-          <>
+      <Stack gap="md">
+            {/* 1 — Hero summary + route */}
             <Card>
               <CardBody pad="roomy">
                 <Stack gap="md">
@@ -55,43 +52,16 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ id
                       <Badge variant="success">ว่าง {offer.seatsLeft} ที่</Badge>
                     )}
                   </Cluster>
-
+                  <Text size="caption" tone="muted">
+                    โพสต์เมื่อ {offer.postedAgo}
+                  </Text>
                   <Separator />
-
                   <Stack gap="sm">
-                    <Stack gap="sm">
-                      <Title as="h2" size="section">
-                        จะผ่านทางไหนบ้าง
-                      </Title>
-                      <RouteTimeline points={[offer.origin, ...offer.via, offer.destination]} />
-                    </Stack>
-                    <Stack gap="sm">
-                      <Title as="h2" size="section" icon={MapPin}>
-                        รอรับตรงไหนได้บ้าง
-                      </Title>
-                      <Stack gap="sm">
-                        {offer.pickupPoints.map((p) => (
-                          <Surface key={p} tone="wash" pad="md">
-                            <Text weight="medium">{p}</Text>
-                          </Surface>
-                        ))}
-                      </Stack>
-                    </Stack>
+                    <Title as="h2" size="section">
+                      จะผ่านทางไหนบ้าง
+                    </Title>
+                    <RouteTimeline points={[offer.origin, ...offer.via, offer.destination]} />
                   </Stack>
-
-                  <PairGrid>
-                    <MetricCard
-                      icon={Users}
-                      value={`${offer.seatsLeft}/${offer.seatsTotal}`}
-                      caption="ที่ว่าง"
-                    />
-                    <MetricCard
-                      icon={CarFront}
-                      value={offer.vehicle.model}
-                      caption={`สี${offer.vehicle.color} • ${offer.vehicle.plate}`}
-                    />
-                  </PairGrid>
-
                   {offer.note && (
                     <Surface tone="brand" pad="md">
                       <Text size="meta" weight="medium">
@@ -103,59 +73,41 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ id
               </CardBody>
             </Card>
 
-            <Card>
-              <CardBody pad="even">
-                <UserRow user={offer.driver} sub={`โพสต์เมื่อ ${offer.postedAgo}`} />
-              </CardBody>
-            </Card>
-          </>
-        }
-        side={
-          <>
+            {/* 2 — Driver trust preview + expandable full profile */}
             <Card>
               <CardBody pad="even">
                 <Stack gap="md">
-                  <Title as="h2" size="section">
-                    ติดต่อ{offer.driver.name}ได้เลย
-                  </Title>
-                  {!full ? (
-                    <Stack gap="md">
-                      <ContactActions phone={offer.contact.phone} lineId={offer.contact.lineId} />
-                      <Stack gap="sm">
-                        <ContactRow icon={Phone}>
-                          <Text as="span" weight="bold">
-                            {offer.contact.phone}
-                          </Text>
-                        </ContactRow>
-                        <ContactRow icon={MessageCircle}>
-                          <Text as="span" weight="bold">
-                            LINE: {offer.contact.lineId}
-                          </Text>
-                        </ContactRow>
-                      </Stack>
-                    </Stack>
-                  ) : (
-                    <Surface tone="wash" pad="md">
-                      <Text weight="bold" tone="muted" align="center">
-                        คันนี้เต็มแล้ว ลองดูคันอื่นนะ
-                      </Text>
-                    </Surface>
-                  )}
-                  <Text size="micro" tone="faint" align="center">
-                    คุยกันได้เลย ไม่ต้องจองผ่านแอป
-                  </Text>
+                  <Cluster align="start" justify="between" gap="sm">
+                    <Grow>
+                      <UserRow user={offer.driver} sub={`โพสต์เมื่อ ${offer.postedAgo}`} />
+                    </Grow>
+                    <DriverQuickActions
+                      phone={offer.contact.phone}
+                      lineId={offer.contact.lineId}
+                      facebookUrl={offer.driver.facebookUrl}
+                      driverName={offer.driver.name}
+                      hidden={full}
+                    />
+                  </Cluster>
+                  <details className="group">
+                    <summary className="flex cursor-pointer list-none items-center justify-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink [&::-webkit-details-marker]:hidden">
+                      <span className="group-open:hidden">ดูโปรไฟล์เต็ม</span>
+                      <span className="hidden group-open:inline">ซ่อนโปรไฟล์เต็ม</span>
+                      <Icon icon={ChevronDown} size="xs" inline />
+                    </summary>
+                    <div className="pt-3">
+                      <TrustProfileCard user={offer.driver} />
+                    </div>
+                  </details>
                 </Stack>
               </CardBody>
             </Card>
 
-            <TrustProfileCard user={offer.driver} />
-
+            {/* 3 — Escape hatch */}
             <Button variant="outline" width="full" asChild>
               <Link href="/find">ดูคันอื่น</Link>
             </Button>
-          </>
-        }
-      />
+      </Stack>
     </Page>
   );
 }

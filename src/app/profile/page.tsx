@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Page, PageHeader, Stack, Cluster, FormGrid } from "@/components/ui/layout";
 import { Surface } from "@/components/ui/surface";
 import { Title, Text } from "@/components/ui/typography";
-import { Icon } from "@/components/ui/icon";
+import { Icon, LineIcon } from "@/components/ui/icon";
 import { ContactRow } from "@/components/ui/rows";
 import { TextLink } from "@/components/ui/nav";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
 import { myOffers } from "@/data/rides";
 import { users } from "@/data/users";
-import { Settings, CarFront, Phone, MessageCircle, User, BadgeCheck, ArrowRight } from "lucide-react";
+import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight } from "lucide-react";
 
 export default function ProfilePage() {
   const me = users.me;
@@ -64,7 +64,12 @@ export default function ProfilePage() {
                   ช่องทางติดต่อ
                 </Title>
                 <Input defaultValue="086-123-4567" aria-label="เบอร์โทร" />
-                <ContactRow icon={MessageCircle}>
+                <Input
+                  defaultValue={me.facebookUrl ?? ""}
+                  placeholder="https://www.facebook.com/..."
+                  aria-label="Facebook"
+                />
+                <ContactRow icon={LineIcon}>
                   <Text as="span" weight="medium">
                     LINE: me.share
                   </Text>
