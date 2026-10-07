@@ -1,5 +1,14 @@
 export type AvatarTone = "ink" | "slate" | "coal" | "bark";
 
+export type VehicleType = "car" | "motorbike";
+
+export interface Vehicle {
+  type: VehicleType;
+  model: string;
+  color: string;
+  plate: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -10,7 +19,7 @@ export interface UserProfile {
   verifiedId: boolean;
   memberSince: string;
   sharedCount: number;
-  vehicle?: { model: string; color: string; plate: string };
+  vehicle?: Vehicle;
   phone?: string;
   lineId?: string;
   facebookUrl?: string;
@@ -27,7 +36,7 @@ export interface RideOffer {
   seatsTotal: number;
   seatsLeft: number;
   pickupPoints: string[];
-  vehicle: { model: string; color: string; plate: string };
+  vehicle: Vehicle;
   contact: { phone: string; lineId: string };
   note?: string;
   postedAgo: string;

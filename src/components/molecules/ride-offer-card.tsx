@@ -6,8 +6,9 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
 import { CardLink } from "@/components/ui/nav";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
-import { ArrowRight, BadgeCheck, CarFront, ChevronRight, Clock, Route as RouteIcon, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, ChevronRight, Clock, Route as RouteIcon, Users } from "lucide-react";
 import type { RideOffer } from "@/lib/types";
+import { vehicleMeta } from "@/components/atoms/badges";
 
 /* RideCard — quiet list card. Trip info + driver open the detail;
    quick actions sit beside the driver (never nested inside a link).
@@ -15,9 +16,10 @@ import type { RideOffer } from "@/lib/types";
 export function RideOfferCard({ offer }: { offer: RideOffer }) {
   const verified = offer.driver.verifiedPhone && offer.driver.verifiedId;
   const href = `/offer/${offer.id}`;
+  const vehicle = vehicleMeta[offer.vehicle.type];
   return (
       <Card>
-        <CardBody pad="even">
+        <CardBody pad="even" className="p-4">
           <Stack gap="md">
             <CardLink
               href={href}
@@ -46,8 +48,9 @@ export function RideOfferCard({ offer }: { offer: RideOffer }) {
                     ผ่านทาง {offer.via.join(" • ")}
                   </Text>
                   <Text size="caption" tone="muted">
-                    <Icon icon={CarFront} size="xs" tone="faint" inline spaced="after" />
-                    {offer.vehicle.model} • สี{offer.vehicle.color} • {offer.vehicle.plate}
+                    <Icon icon={vehicle.icon} size="xs" tone="faint" inline spaced="after" />
+                    {vehicle.label} • {offer.vehicle.model} • สี{offer.vehicle.color} • ทะเบียน{" "}
+                    {offer.vehicle.plate}
                   </Text>
                 </Stack>
               </Stack>

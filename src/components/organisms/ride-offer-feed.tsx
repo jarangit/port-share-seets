@@ -40,11 +40,17 @@ export function RideOfferFeed() {
     <Stack gap="md">
       <SearchPanel>
         <Stack gap="sm">
-          <Input
-            value={to}
-            onChange={(e) => setTo(e.target.value)}
-            placeholder="ปลายทางของคุณ เช่น อโศก"
-          />
+          <div className="relative">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+              <Icon icon={Search} size="xs" tone="faint" />
+            </span>
+            <Input
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              placeholder="ปลายทางของคุณ เช่น อโศก"
+              className="pl-11"
+            />
+          </div>
           <SegmentedControl options={dayTabs} value={day} onChange={setDay} />
         </Stack>
       </SearchPanel>

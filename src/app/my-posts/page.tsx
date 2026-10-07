@@ -8,7 +8,8 @@ import { Page, PageHeader, Stack, Cluster, CardGrid } from "@/components/ui/layo
 import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { myOffers } from "@/data/rides";
-import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone, CarFront } from "lucide-react";
+import { vehicleMeta } from "@/components/atoms/badges";
+import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone } from "lucide-react";
 
 export default function MyPostsPage() {
   const [closed, setClosed] = useState<string[]>([]);
@@ -49,8 +50,15 @@ export default function MyPostsPage() {
                       {o.dateLabel} • ออก {o.departureTime} น. • ว่าง {o.seatsLeft}/{o.seatsTotal} ที่
                     </Text>
                     <Text size="caption" tone="muted">
-                      <Icon icon={CarFront} size="xs" tone="faint" inline spaced="after" />
-                      {o.vehicle.model} สี{o.vehicle.color} • ทะเบียน {o.vehicle.plate}
+                      <Icon
+                        icon={vehicleMeta[o.vehicle.type].icon}
+                        size="xs"
+                        tone="faint"
+                        inline
+                        spaced="after"
+                      />
+                      {vehicleMeta[o.vehicle.type].label} • {o.vehicle.model} • สี{o.vehicle.color} • ทะเบียน{" "}
+                      {o.vehicle.plate}
                     </Text>
                   </Stack>
 

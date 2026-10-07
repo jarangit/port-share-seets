@@ -22,41 +22,51 @@ export function MobileTopBar() {
   const pathname = usePathname();
 
   return (
-    <TopBarFrame>
-      <TopBarRow>
-        <Link href="/" onClick={() => setOpen(false)}>
-          <BrandMark name="ไปด้วยกัน" compact />
-        </Link>
-        <IconButton
-          label={open ? "ปิดเมนู" : "เปิดเมนู"}
-          icon={{ on: X, off: Menu }}
-          toggled={open}
-          onDark
-          onClick={() => setOpen((v) => !v)}
-        />
-      </TopBarRow>
-
+    <>
       {open && (
-        <TopBarMenu>
-          <Stack gap="sm">
-            {items.map((it) => (
-              <NavItem
-                key={it.href}
-                href={it.href}
-                icon={it.icon}
-                label={it.label}
-                active={it.match.some((m) => pathname === m || pathname.startsWith(m + "/"))}
-                onClick={() => setOpen(false)}
-              />
-            ))}
-            <Button width="full" asChild>
-              <Link href="/share" onClick={() => setOpen(false)}>
-                <Icon icon={Plus} size="xs" /> แชร์รถ
-              </Link>
-            </Button>
-          </Stack>
-        </TopBarMenu>
+        <button
+          type="button"
+          aria-label="ปิดเมนู"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-30 bg-overlay lg:hidden"
+        />
       )}
-    </TopBarFrame>
+      <TopBarFrame>
+        <TopBarRow>
+          <Link href="/" onClick={() => setOpen(false)}>
+            <BrandMark name="ไปด้วยกัน" compact />
+          </Link>
+          <IconButton
+            label={open ? "ปิดเมนู" : "เปิดเมนู"}
+            icon={{ on: X, off: Menu }}
+            toggled={open}
+            onDark
+            onClick={() => setOpen((v) => !v)}
+          />
+        </TopBarRow>
+
+        {open && (
+          <TopBarMenu>
+            <Stack gap="sm">
+              {items.map((it) => (
+                <NavItem
+                  key={it.href}
+                  href={it.href}
+                  icon={it.icon}
+                  label={it.label}
+                  active={it.match.some((m) => pathname === m || pathname.startsWith(m + "/"))}
+                  onClick={() => setOpen(false)}
+                />
+              ))}
+              <Button width="full" asChild>
+                <Link href="/share" onClick={() => setOpen(false)}>
+                  <Icon icon={Plus} size="xs" /> แชร์รถ
+                </Link>
+              </Button>
+            </Stack>
+          </TopBarMenu>
+        )}
+      </TopBarFrame>
+    </>
   );
 }
