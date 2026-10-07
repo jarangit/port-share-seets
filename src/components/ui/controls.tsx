@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import type { LucideIcon } from "lucide-react";
 
-/* SegmentedControl — day tabs (วันนี้ / พรุ่งนี้) */
+/* SegmentedControl — option tabs (day tabs, vehicle filter).
+   Columns follow the option count (2–3 supported). */
 export function SegmentedControl<T extends string>({
   options,
   value,
@@ -14,7 +15,11 @@ export function SegmentedControl<T extends string>({
   onChange: (id: T) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-1 rounded-full bg-interactive p-1" role="group">
+    <div
+      className="grid gap-1 rounded-full bg-interactive p-1"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      role="group"
+    >
       {options.map((o) => (
         <button
           key={o.id}
