@@ -9,16 +9,23 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon, IconBox } from "@/components/ui/icon";
 import { Field } from "@/components/ui/field";
 import { BackLink } from "@/components/ui/nav";
-import { SegmentedControl } from "@/components/ui/controls";
+import { RadioGroup, RadioOption } from "@/components/ui/radio-group";
 import { vehicleMeta } from "@/components/atoms/badges";
 import { RideOfferCard } from "@/features/rides/components/ride-offer-card";
 import { users } from "@/features/users/data/users";
 import type { RideOffer, VehicleType } from "@/features/rides/types";
-import { Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Check, ArrowRight, ArrowLeft, type LucideIcon } from "lucide-react";
 
-const vehicleOptions: { id: VehicleType; label: string }[] = [
-  { id: "car", label: vehicleMeta.car.label },
-  { id: "motorbike", label: vehicleMeta.motorbike.label },
+const vehicleOptions: { id: VehicleType; label: string; icon: LucideIcon }[] = [
+  { id: "car", label: vehicleMeta.car.label, icon: vehicleMeta.car.icon },
+  { id: "motorbike", label: vehicleMeta.motorbike.label, icon: vehicleMeta.motorbike.icon },
+];
+
+type DayTab = "today" | "tomorrow";
+
+const dayOptions: { id: DayTab; label: string }[] = [
+  { id: "today", label: "วันนี้" },
+  { id: "tomorrow", label: "พรุ่งนี้" },
 ];
 
 /* Format Thai mobile digits as 08x-xxx-xxxx while typing. */
@@ -33,6 +40,7 @@ export default function PostPage() {
   const [done, setDone] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [vehicleType, setVehicleType] = useState<VehicleType>("car");
+  const [day, setDay] = useState<DayTab>("today");
   const [phone, setPhone] = useState("086-123-4567");
   const [preview, setPreview] = useState<RideOffer | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -61,7 +69,7 @@ export default function PostPage() {
       origin: str("origin"),
       destination: str("destination"),
       departureTime: str("departureTime") || "07:30",
-      dateLabel: "วันนี้",
+      dateLabel: day === "today" ? "วันนี้" : "พรุ่งนี้",
       via: str("via")
         .split(",")
         .map((s) => s.trim())
@@ -93,8 +101,9 @@ export default function PostPage() {
                   พร้อมช่วยแล้ว
                 </Title>
                 <Text size="meta" tone="muted" align="center" narrow>
-                  หลักสี่ <Icon icon={ArrowRight} size="xs" inline /> สยาม • ออก 07:30 น. • ว่าง 2 ที่
-                  • {vehicleMeta[vehicleType].label}
+                  หลักสี่ <Icon icon={ArrowRight} size="xs" inline /> สยาม •{" "}
+                  {day === "today" ? "วันนี้" : "พรุ่งนี้"} • ออก 07:30 น. • ว่าง 2 ที่ •{" "}
+                  {vehicleMeta[vehicleType].label}
                   ถ้ามีใครไปทางเดียวกัน เขาจะติดต่อคุณทางโทรหรือ LINE
                 </Text>
               </Stack>
@@ -193,13 +202,28 @@ export default function PostPage() {
                     />
                   </Field>
                 </PairGrid>
-                  <Field label="ประเภทรถ">
-                    <SegmentedControl
-                      options={vehicleOptions}
-                      value={vehicleType}
-                      onChange={setVehicleType}
-                    />
-                  </Field>
+                <Field label="วันที่เดินทาง">
+                  <RadioGroup
+                    value={day}
+                    onValueChange={(v) => setDay(v as DayTab)}
+                    orientation="horizontal"
+                  >
+                    {dayOptions.map((o) => (
+                      <RadioOption key={o.id} value={o.id} label={o.label} />
+                    ))}
+                  </RadioGroup>
+                </Field>
+                <Field label="ประเภทรถ">
+                  <RadioGroup
+                    value={vehicleType}
+                    onValueChange={(v) => setVehicleType(v as VehicleType)}
+                    orientation="horizontal"
+                  >
+                    {vehicleOptions.map((o) => (
+                      <RadioOption key={o.id} value={o.id} label={o.label} icon={o.icon} />
+                    ))}
+                  </RadioGroup>
+                </Field>
                 <Field label="เส้นทางผ่าน (คั่นด้วยคอมมา)">
                   <Input name="via" placeholder="วิภาวดี, อนุสาวรีย์" />
                 </Field>
