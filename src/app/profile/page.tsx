@@ -9,8 +9,8 @@ import { Icon, LineIcon } from "@/components/ui/icon";
 import { ContactRow } from "@/components/ui/rows";
 import { TextLink } from "@/components/ui/nav";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
-import { myOffers } from "@/data/rides";
-import { users } from "@/data/users";
+import { myOffers } from "@/features/rides/data/rides";
+import { users } from "@/features/users/data/users";
 import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight } from "lucide-react";
 
 export default function ProfilePage() {

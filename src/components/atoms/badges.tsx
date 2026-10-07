@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { Cluster } from "@/components/ui/layout";
 import { CheckCheck, ShieldCheck, CarFront, Motorbike, type LucideIcon } from "lucide-react";
-import type { VehicleType } from "@/lib/types";
+import type { VehicleType } from "@/features/rides/types";
 
 export const vehicleMeta: Record<VehicleType, { label: string; icon: LucideIcon }> = {
   car: { label: "รถยนต์", icon: CarFront },

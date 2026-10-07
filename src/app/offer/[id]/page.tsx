@@ -13,7 +13,7 @@ import { RouteTimeline } from "@/components/ui/route-timeline";
 import { UserRow } from "@/components/atoms/user-row";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
-import { getOffer, rideOffers, myOffers } from "@/data/rides";
+import { getOffer, rideOffers, myOffers } from "@/features/rides/data/rides";
 import { Clock3, ArrowRight, ChevronDown } from "lucide-react";
 
 export function generateStaticParams() {

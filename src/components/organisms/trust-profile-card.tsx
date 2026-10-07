@@ -7,7 +7,7 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { InfoRow, ContactRow } from "@/components/ui/rows";
 import { Flag, Ban, Phone, BadgeCheck } from "lucide-react";
-import type { UserProfile } from "@/lib/types";
+import type { UserProfile } from "@/features/users/types";
 import { vehicleMeta } from "@/components/atoms/badges";
 
 export function TrustProfileCard({ user: u }: { user: UserProfile }) {

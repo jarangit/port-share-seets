@@ -3,7 +3,7 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import type { AvatarTone } from "@/lib/types";
+import type { AvatarTone } from "@/features/users/types";
 
 const avatarToneClass: Record<AvatarTone, string> = {
   ink: "bg-brand-primary",

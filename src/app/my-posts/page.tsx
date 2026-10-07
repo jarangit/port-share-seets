@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Page, PageHeader, Stack, Cluster, CardGrid } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
-import { myOffers } from "@/data/rides";
+import { myOffers } from "@/features/rides/data/rides";
 import { vehicleMeta } from "@/components/atoms/badges";
 import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone } from "lucide-react";
 

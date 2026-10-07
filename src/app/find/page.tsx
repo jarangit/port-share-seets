@@ -1,4 +1,4 @@
-import { RideOfferFeed } from "@/components/organisms/ride-offer-feed";
+import { RideOfferFeed } from "@/features/rides/components/ride-offer-feed";
 import { Page, PageHeader } from "@/components/ui/layout";
 import { Title } from "@/components/ui/typography";
 

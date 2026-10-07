@@ -2,7 +2,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Cluster, Shrink } from "@/components/ui/layout";
 import { Text } from "@/components/ui/typography";
 import { TrustBadge } from "@/components/atoms/badges";
-import type { UserProfile } from "@/lib/types";
+import type { UserProfile } from "@/features/users/types";
 
 export function UserRow({ user, sub }: { user: UserProfile; sub?: string }) {
   return (
