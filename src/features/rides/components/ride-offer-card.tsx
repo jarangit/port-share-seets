@@ -7,13 +7,35 @@ import { Icon } from "@/components/ui/icon";
 import { CardLink } from "@/components/ui/nav";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
 import { ArrowRight, BadgeCheck, ChevronRight, Clock, Route as RouteIcon, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import type { RideOffer } from "@/features/rides/types";
 import { vehicleMeta } from "@/components/atoms/badges";
+
+/* CardSection — link wrapper, or a plain fragment in preview mode
+   (confirmation screen shows the real card without navigating away). */
+function CardSection({
+  href,
+  label,
+  interactive,
+  children,
+}: {
+  href: string;
+  label: string;
+  interactive: boolean;
+  children: ReactNode;
+}) {
+  if (!interactive) return <>{children}</>;
+  return (
+    <CardLink href={href} label={label}>
+      {children}
+    </CardLink>
+  );
+}
 
 /* RideCard — quiet list card. Trip info + driver open the detail;
    quick actions sit beside the driver (never nested inside a link).
    Information hierarchy: route → trip facts (time/via/vehicle) → driver. */
-export function RideOfferCard({ offer }: { offer: RideOffer }) {
+export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer; interactive?: boolean }) {
   const verified = offer.driver.verifiedPhone && offer.driver.verifiedId;
   const href = `/offer/${offer.id}`;
   const vehicle = vehicleMeta[offer.vehicle.type];
@@ -21,9 +43,10 @@ export function RideOfferCard({ offer }: { offer: RideOffer }) {
       <Card>
         <CardBody pad="spacious">
           <Stack gap="md">
-            <CardLink
+            <CardSection
               href={href}
               label={`${offer.origin} ไป ${offer.destination} ออก ${offer.departureTime} น. ว่าง ${offer.seatsLeft} ที่`}
+              interactive={interactive}
             >
               <Stack gap="md">
                 <Cluster align="start" justify="between" gap="sm">
@@ -54,11 +77,15 @@ export function RideOfferCard({ offer }: { offer: RideOffer }) {
                   </Text>
                 </Stack>
               </Stack>
-            </CardLink>
+            </CardSection>
 
             <Cluster align="start" justify="between" gap="sm">
               <Grow>
-                <CardLink href={href} label={`ดูรายละเอียดรถของ ${offer.driver.name}`}>
+                <CardSection
+                  href={href}
+                  label={`ดูรายละเอียดรถของ ${offer.driver.name}`}
+                  interactive={interactive}
+                >
                   <Cluster gap="sm">
                     <Avatar tone={offer.driver.avatarTone}>
                       {offer.driver.avatarUrl && <AvatarImage src={offer.driver.avatarUrl} alt={offer.driver.name} />}
@@ -76,7 +103,7 @@ export function RideOfferCard({ offer }: { offer: RideOffer }) {
                       </Text>
                     </Stack>
                   </Cluster>
-                </CardLink>
+                </CardSection>
               </Grow>
               <DriverQuickActions
                 phone={offer.contact.phone}

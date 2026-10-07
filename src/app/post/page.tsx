@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,77 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon, IconBox } from "@/components/ui/icon";
 import { Field } from "@/components/ui/field";
 import { BackLink } from "@/components/ui/nav";
-import { Check, CarFront, ArrowRight } from "lucide-react";
+import { SegmentedControl } from "@/components/ui/controls";
+import { vehicleMeta } from "@/components/atoms/badges";
+import { RideOfferCard } from "@/features/rides/components/ride-offer-card";
+import { users } from "@/features/users/data/users";
+import type { RideOffer, VehicleType } from "@/features/rides/types";
+import { Check, ArrowRight, ArrowLeft } from "lucide-react";
+
+const vehicleOptions: { id: VehicleType; label: string }[] = [
+  { id: "car", label: vehicleMeta.car.label },
+  { id: "motorbike", label: vehicleMeta.motorbike.label },
+];
+
+/* Format Thai mobile digits as 08x-xxx-xxxx while typing. */
+const formatPhone = (value: string) => {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+  return [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)]
+    .filter(Boolean)
+    .join("-");
+};
 
 export default function PostPage() {
   const [done, setDone] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [vehicleType, setVehicleType] = useState<VehicleType>("car");
+  const [phone, setPhone] = useState("086-123-4567");
+  const [preview, setPreview] = useState<RideOffer | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const goNext = () => {
+    if (formRef.current?.reportValidity()) setStep(2);
+  };
+
+  /* Build a real RideOffer from the form so the confirmation
+     screen can preview the exact card others will see. */
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const str = (key: string) => String(fd.get(key) ?? "").trim();
+    const seats = Math.max(1, parseInt(str("seats"), 10) || 1);
+    const me = users.me;
+    const driverName = str("driverName") || me.name;
+    setPreview({
+      id: "preview",
+      driver: {
+        ...me,
+        name: driverName,
+        initials: driverName.charAt(0),
+        facebookUrl: str("facebookUrl") || undefined,
+      },
+      origin: str("origin"),
+      destination: str("destination"),
+      departureTime: str("departureTime") || "07:30",
+      dateLabel: "วันนี้",
+      via: str("via")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      seatsTotal: seats,
+      seatsLeft: seats,
+      pickupPoints: [],
+      vehicle: {
+        type: vehicleType,
+        model: me.vehicle?.model ?? "-",
+        color: me.vehicle?.color ?? "-",
+        plate: me.vehicle?.plate ?? "-",
+      },
+      contact: { phone: str("phone"), lineId: str("lineId") },
+      note: str("note") || undefined,
+      postedAgo: "เมื่อสักครู่",
+    });
+  };
 
   if (done) {
     return (
@@ -27,6 +94,7 @@ export default function PostPage() {
                 </Title>
                 <Text size="meta" tone="muted" align="center" narrow>
                   หลักสี่ <Icon icon={ArrowRight} size="xs" inline /> สยาม • ออก 07:30 น. • ว่าง 2 ที่
+                  • {vehicleMeta[vehicleType].label}
                   ถ้ามีใครไปทางเดียวกัน เขาจะติดต่อคุณทางโทรหรือ LINE
                 </Text>
               </Stack>
@@ -45,76 +113,157 @@ export default function PostPage() {
     );
   }
 
+  if (preview) {
+    return (
+      <Page>
+        <PageHeader>
+          <Title as="h1" size="page">
+            ตรวจสอบข้อมูล
+          </Title>
+        </PageHeader>
+
+        <Text size="caption" tone="muted" weight="semibold">
+          ขั้นตอนที่ 3 จาก 3 • ยืนยัน
+        </Text>
+
+        <Stack gap="md">
+          <Text size="meta" tone="muted" align="center">
+            การ์ดด้านล่างคือสิ่งที่คนอื่นจะเห็น
+          </Text>
+          <RideOfferCard offer={preview} interactive={false} />
+          <PairGrid>
+            <Button variant="outline" width="full" type="button" onClick={() => setPreview(null)}>
+              <Icon icon={ArrowLeft} size="xs" /> แก้ไขข้อมูล
+            </Button>
+            <Button
+              width="full"
+              type="button"
+              onClick={() => {
+                setPreview(null);
+                setDone(true);
+              }}
+            >
+              ยืนยันแชร์เส้นทาง
+            </Button>
+          </PairGrid>
+        </Stack>
+      </Page>
+    );
+  }
+
   return (
     <Page>
       <BackLink href="/my-posts" label="กลับ" />
       <PageHeader>
-        <Title as="h1" size="page" icon={CarFront}>
+        <Title as="h1" size="page" icon={vehicleMeta[vehicleType].icon}>
           แชร์ที่ว่างของคุณ
         </Title>
       </PageHeader>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setDone(true);
-        }}
-      >
+      <Text size="caption" tone="muted" weight="semibold">
+        ขั้นตอนที่ {step} จาก 3 • {step === 1 ? "เส้นทาง" : "ช่องทางติดต่อ"}
+      </Text>
+
+      <form ref={formRef} onSubmit={handleSubmit}>
         <FormGrid>
-          <Card>
-            <CardBody pad="even">
-              <Stack gap="md">
-                <Title as="h2" size="section">
-                  คุณจะไปทางไหน
-                </Title>
+          <div hidden={step !== 1}>
+            <Card>
+              <CardBody pad="even">
+                <Stack gap="md">
+                  <Title as="h2" size="section">
+                    คุณจะไปทางไหน
+                  </Title>
                 <Field label="ต้นทาง">
-                  <Input required placeholder="เช่น หลักสี่" />
+                  <Input name="origin" required placeholder="เช่น หลักสี่" />
                 </Field>
                 <Field label="ปลายทาง">
-                  <Input required placeholder="เช่น สยาม" />
+                  <Input name="destination" required placeholder="เช่น สยาม" />
                 </Field>
                 <PairGrid>
                   <Field label="เวลาออก">
-                    <Input required placeholder="07:30" defaultValue="07:30" />
+                    <Input name="departureTime" required type="time" defaultValue="07:30" />
                   </Field>
                   <Field label="ที่ว่างในรถ">
-                    <Input required placeholder="2" defaultValue="2" inputMode="numeric" />
+                    <Input
+                      name="seats"
+                      required
+                      placeholder="2"
+                      defaultValue="2"
+                      inputMode="numeric"
+                    />
                   </Field>
                 </PairGrid>
+                  <Field label="ประเภทรถ">
+                    <SegmentedControl
+                      options={vehicleOptions}
+                      value={vehicleType}
+                      onChange={setVehicleType}
+                    />
+                  </Field>
                 <Field label="เส้นทางผ่าน (คั่นด้วยคอมมา)">
-                  <Input placeholder="วิภาวดี, อนุสาวรีย์" />
+                  <Input name="via" placeholder="วิภาวดี, อนุสาวรีย์" />
                 </Field>
-                <Field label="จุดรับที่สะดวก">
-                  <Textarea placeholder="เช่น MRT หลักสี่ ทางออก 3" />
-                </Field>
-              </Stack>
-            </CardBody>
-          </Card>
+                  <Button type="button" size="lg" width="full" onClick={goNext}>
+                    ถัดไป <Icon icon={ArrowRight} size="xs" />
+                  </Button>
+                </Stack>
+              </CardBody>
+            </Card>
+          </div>
 
-          <Card>
-            <CardBody pad="even">
-              <Stack gap="md">
-                <Title as="h2" size="section">
-                  ติดต่อคุณได้ทางไหน
-                </Title>
-                <Field label="เบอร์โทร">
-                  <Input required placeholder="08x-xxx-xxxx" defaultValue="086-123-4567" />
-                </Field>
+          <div hidden={step !== 2}>
+            <Card>
+              <CardBody pad="even">
+                <Stack gap="md">
+                  <Title as="h2" size="section">
+                    ติดต่อคุณได้ทางไหน
+                  </Title>
+                  <Field label="ชื่อผู้แชร์">
+                    <Input
+                      name="driverName"
+                      required
+                      placeholder="เช่น ต้น"
+                      defaultValue={users.me.name}
+                    />
+                  </Field>
+                  <Field label="เบอร์โทร">
+                    <Input
+                      name="phone"
+                      placeholder="08x-xxx-xxxx"
+                      inputMode="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(formatPhone(e.target.value))}
+                    />
+                  </Field>
                 <Field label="LINE ID">
-                  <Input required placeholder="line id ของคุณ" defaultValue="me.share" />
+                  <Input name="lineId" required placeholder="line id ของคุณ" defaultValue="me.share" />
+                </Field>
+                <Field label="Facebook URL">
+                  <Input
+                    name="facebookUrl"
+                    placeholder="เช่น https://www.facebook.com/..."
+                    defaultValue={users.me.facebookUrl}
+                    inputMode="url"
+                  />
                 </Field>
                 <Field label="รายละเอียดเพิ่มเติม">
-                  <Textarea placeholder="เช่น ออกทุกเช้า ทักมาได้เลย" />
+                  <Textarea name="note" placeholder="เช่น ออกทุกเช้า ทักมาได้เลย" />
                 </Field>
-                <Button type="submit" size="lg" width="full">
-                  แชร์เส้นทาง
-                </Button>
-                <Text size="micro" tone="faint" align="center">
-                  แชร์ฟรี ไม่มีค่าใช้จ่าย
-                </Text>
-              </Stack>
-            </CardBody>
-          </Card>
+                  <PairGrid>
+                    <Button variant="outline" width="full" type="button" onClick={() => setStep(1)}>
+                      <Icon icon={ArrowLeft} size="xs" /> ย้อนกลับ
+                    </Button>
+                    <Button type="submit" size="lg" width="full">
+                      แชร์เส้นทาง
+                    </Button>
+                  </PairGrid>
+                  <Text size="micro" tone="faint" align="center">
+                    แชร์ฟรี ไม่มีค่าใช้จ่าย
+                  </Text>
+                </Stack>
+              </CardBody>
+            </Card>
+          </div>
         </FormGrid>
       </form>
     </Page>
