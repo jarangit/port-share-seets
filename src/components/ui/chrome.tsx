@@ -58,6 +58,19 @@ export function TopBarMenu({ children }: { children: ReactNode }) {
   return <nav className="rounded-b-card bg-surface p-4">{children}</nav>;
 }
 
+/* TopBarScrim — gray overlay behind the open mobile menu.
+   Tap it to dismiss the menu. */
+export function TopBarScrim({ onClose }: { onClose: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="ปิดเมนู"
+      onClick={onClose}
+      className="fixed inset-0 z-30 bg-overlay lg:hidden"
+    />
+  );
+}
+
 /* SidebarFrame — sticky desktop sidebar column */
 export function SidebarFrame({ children }: { children: ReactNode }) {
   return (

@@ -19,7 +19,7 @@ export function RideOfferCard({ offer }: { offer: RideOffer }) {
   const vehicle = vehicleMeta[offer.vehicle.type];
   return (
       <Card>
-        <CardBody pad="even" className="p-4">
+        <CardBody pad="spacious">
           <Stack gap="md">
             <CardLink
               href={href}

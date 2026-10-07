@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Stack } from "@/components/ui/layout";
 import { SearchPanel } from "@/components/ui/surface";
@@ -40,17 +40,12 @@ export function RideOfferFeed() {
     <Stack gap="md">
       <SearchPanel>
         <Stack gap="sm">
-          <div className="relative">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
-              <Icon icon={Search} size="xs" tone="faint" />
-            </span>
-            <Input
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              placeholder="ปลายทางของคุณ เช่น อโศก"
-              className="pl-11"
-            />
-          </div>
+          <SearchInput
+            icon={Search}
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            placeholder="ปลายทางของคุณ เช่น อโศก"
+          />
           <SegmentedControl options={dayTabs} value={day} onChange={setDay} />
         </Stack>
       </SearchPanel>

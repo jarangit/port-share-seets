@@ -8,7 +8,7 @@ import { Stack } from "@/components/ui/layout";
 import { Icon, BrandMark } from "@/components/ui/icon";
 import { NavItem } from "@/components/ui/nav";
 import { IconButton } from "@/components/ui/controls";
-import { TopBarFrame, TopBarRow, TopBarMenu } from "@/components/ui/chrome";
+import { TopBarFrame, TopBarRow, TopBarMenu, TopBarScrim } from "@/components/ui/chrome";
 
 const items = [
   { href: "/", label: "เริ่มต้น", icon: House, match: ["/"] },
@@ -23,14 +23,7 @@ export function MobileTopBar() {
 
   return (
     <>
-      {open && (
-        <button
-          type="button"
-          aria-label="ปิดเมนู"
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 z-30 bg-overlay lg:hidden"
-        />
-      )}
+      {open && <TopBarScrim onClose={() => setOpen(false)} />}
       <TopBarFrame>
         <TopBarRow>
           <Link href="/" onClick={() => setOpen(false)}>

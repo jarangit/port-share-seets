@@ -10,6 +10,7 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
 import { BackLink } from "@/components/ui/nav";
 import { RouteTimeline } from "@/components/ui/route-timeline";
+import { Disclosure } from "@/components/ui/disclosure";
 import { UserRow } from "@/components/atoms/user-row";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
@@ -89,16 +90,13 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ id
                       hidden={full}
                     />
                   </Cluster>
-                  <details className="group">
-                    <summary className="flex cursor-pointer list-none items-center justify-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink [&::-webkit-details-marker]:hidden">
-                      <span className="group-open:hidden">ดูโปรไฟล์เต็ม</span>
-                      <span className="hidden group-open:inline">ซ่อนโปรไฟล์เต็ม</span>
-                      <Icon icon={ChevronDown} size="xs" inline />
-                    </summary>
-                    <div className="pt-3">
-                      <TrustProfileCard user={offer.driver} />
-                    </div>
-                  </details>
+                  <Disclosure
+                    openLabel="ดูโปรไฟล์เต็ม"
+                    closeLabel="ซ่อนโปรไฟล์เต็ม"
+                    chevron={<Icon icon={ChevronDown} size="xs" inline />}
+                  >
+                    <TrustProfileCard user={offer.driver} />
+                  </Disclosure>
                 </Stack>
               </CardBody>
             </Card>

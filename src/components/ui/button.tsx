@@ -45,4 +45,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+/* SoftIconButton — secondary icon button with soft text + large icon
+   (driver contact actions: phone / LINE / Facebook). */
+const SoftIconButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, ...props }, ref) => (
+    <Button
+      ref={ref}
+      variant="secondary"
+      size="icon"
+      {...props}
+      className={cn("text-ink-soft [&_svg]:size-6", className)}
+    />
+  )
+);
+SoftIconButton.displayName = "SoftIconButton";
+
+export { Button, SoftIconButton, buttonVariants };

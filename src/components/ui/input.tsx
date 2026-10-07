@@ -1,5 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon";
+import type { LucideIcon } from "lucide-react";
 
 const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => (
@@ -29,4 +31,18 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttribu
 );
 Textarea.displayName = "Textarea";
 
-export { Input, Textarea };
+/* SearchInput — text input with a leading icon (find page) */
+const SearchInput = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement> & { icon: LucideIcon }
+>(({ icon, className, ...props }, ref) => (
+  <div className="relative">
+    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+      <Icon icon={icon} size="xs" tone="faint" />
+    </span>
+    <Input ref={ref} {...props} className={cn("pl-11", className)} />
+  </div>
+));
+SearchInput.displayName = "SearchInput";
+
+export { Input, Textarea, SearchInput };

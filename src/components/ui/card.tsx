@@ -30,6 +30,8 @@ const cardBodyVariants = cva("", {
       default: "px-3 pb-3 pt-2",
       /** even 12px all around */
       even: "p-3",
+      /** even 16px all around (offer cards) */
+      spacious: "p-4",
       /** roomy top for profile-style cards */
       roomy: "px-3 pb-3 pt-4",
       /** tall success panel */

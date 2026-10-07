@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { SoftIconButton } from "@/components/ui/button";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { Cluster } from "@/components/ui/layout";
 import { Phone } from "lucide-react";
@@ -29,22 +29,12 @@ export function DriverQuickActions({
 
   return (
     <Cluster gap="sm">
-      <Button
-        variant="secondary"
-        size="icon"
-        asChild
-        className="text-ink-soft [&_svg]:size-6"
-      >
+      <SoftIconButton asChild>
         <a href={`tel:${phone.replace(/-/g, "")}`} aria-label={`โทรหา ${driverName}`}>
           <Icon icon={Phone} size="xs" />
         </a>
-      </Button>
-      <Button
-        variant="secondary"
-        size="icon"
-        asChild
-        className="text-ink-soft [&_svg]:size-6"
-      >
+      </SoftIconButton>
+      <SoftIconButton asChild>
         <a
           href={`https://line.me/ti/p/~${lineId}`}
           target="_blank"
@@ -53,14 +43,9 @@ export function DriverQuickActions({
         >
           <Icon icon={LineIcon} size="xs" />
         </a>
-      </Button>
+      </SoftIconButton>
       {facebookUrl && (
-        <Button
-          variant="secondary"
-          size="icon"
-          asChild
-          className="text-ink-soft [&_svg]:size-6"
-        >
+        <SoftIconButton asChild>
           <a
             href={facebookUrl}
             target="_blank"
@@ -69,7 +54,7 @@ export function DriverQuickActions({
           >
             <Icon icon={Facebook} size="xs" />
           </a>
-        </Button>
+        </SoftIconButton>
       )}
     </Cluster>
   );
