@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,29 +6,31 @@ import { Badge } from "@/components/ui/badge";
 import { Page, PageHeader, Stack, Cluster, CardGrid } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
-import { myOffers } from "@/features/rides/data/rides";
+import { useMyRideOffers, useUpdateRideOfferStatus } from "@/features/rides/hooks/ride-offer-queries";
 import { vehicleMeta } from "@/components/atoms/badges";
+import { copy } from "@/content/copy";
 import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone } from "lucide-react";
 
 export default function MyPostsPage() {
-  const [closed, setClosed] = useState<string[]>([]);
+  const { data: myOffers = [] } = useMyRideOffers();
+  const updateStatus = useUpdateRideOfferStatus();
 
   return (
     <Page>
       <PageHeader layout="row">
         <Title as="h1" size="page">
-          เส้นทางที่ฉันแชร์
+          {copy.myPosts.title}
         </Title>
         <Button size="sm" width="shrink" asChild>
           <Link href="/post">
-            <Icon icon={Plus} size="xs" /> แชร์เพิ่ม
+            <Icon icon={Plus} size="xs" /> {copy.myPosts.shareMore}
           </Link>
         </Button>
       </PageHeader>
 
       <CardGrid>
         {myOffers.map((o) => {
-          const isClosed = closed.includes(o.id);
+          const isClosed = o.seatsLeft === 0;
           return (
             <Card key={o.id} state={isClosed ? "dimmed" : "open"}>
               <CardBody pad="even">
@@ -40,14 +41,15 @@ export default function MyPostsPage() {
                         {o.origin} <Icon icon={ArrowRight} size="xs" inline /> {o.destination}
                       </Title>
                       {isClosed ? (
-                        <Badge variant="secondary">ที่นั่งเต็มแล้ว</Badge>
+                        <Badge variant="secondary">{copy.myPosts.markFull}</Badge>
                       ) : (
-                        <Badge variant="success">เปิดรับอยู่</Badge>
+                        <Badge variant="success">{copy.shared.openSeats}</Badge>
                       )}
                     </Cluster>
                     <Text size="meta" tone="soft" weight="semibold">
                       <Icon icon={Clock} size="xs" tone="faint" inline spaced="after" />
-                      {o.dateLabel} • ออก {o.departureTime} น. • ว่าง {o.seatsLeft}/{o.seatsTotal} ที่
+                      {copy.shared.tripMeta(o.dateLabel, o.departureTime)} •{" "}
+                      {copy.shared.seatsMeta(o.seatsLeft, o.seatsTotal)}
                     </Text>
                     <Text size="caption" tone="muted">
                       <Icon
@@ -57,8 +59,9 @@ export default function MyPostsPage() {
                         inline
                         spaced="after"
                       />
-                      {vehicleMeta[o.vehicle.type].label} • {o.vehicle.model} • สี{o.vehicle.color} • ทะเบียน{" "}
-                      {o.vehicle.plate}
+                      {vehicleMeta[o.vehicle.type].label} • {o.vehicle.model} •{" "}
+                      {copy.shared.vehicleColor(o.vehicle.color)} •{" "}
+                      {copy.shared.vehiclePlate(o.vehicle.plate)}
                     </Text>
                   </Stack>
 
@@ -79,19 +82,16 @@ export default function MyPostsPage() {
 
                   <Cluster gap="sm">
                     <Button variant="outline" size="sm" width="grow">
-                      <Icon icon={Pencil} size="xs" /> แก้ไข
+                      <Icon icon={Pencil} size="xs" /> {copy.shared.edit}
                     </Button>
                     <Button
                       variant={isClosed ? "default" : "secondary"}
                       size="sm"
                       width="grow"
-                      onClick={() =>
-                        setClosed((prev) =>
-                          prev.includes(o.id) ? prev.filter((id) => id !== o.id) : [...prev, o.id]
-                        )
-                      }
+                      onClick={() => updateStatus.mutate({ id: o.id, status: isClosed ? "open" : "full" })}
+                      disabled={updateStatus.isPending}
                     >
-                      <Icon icon={Power} size="xs" /> {isClosed ? "รับอีกครั้ง" : "ที่นั่งเต็มแล้ว"}
+                      <Icon icon={Power} size="xs" /> {isClosed ? copy.myPosts.reopen : copy.myPosts.markFull}
                     </Button>
                   </Cluster>
                 </Stack>
@@ -107,11 +107,11 @@ export default function MyPostsPage() {
             <Cluster gap="sm" justify="center">
               <Icon icon={Lightbulb} size="xs" />
               <Text weight="bold" align="center">
-                ถ้ามีใครไปทางเดียวกัน เขาจะโทรหรือทัก LINE มาเอง
+                {copy.myPosts.tipTitle}
               </Text>
             </Cluster>
             <Text size="caption" tone="muted" align="center">
-              ที่นั่งเต็มเมื่อไหร่ อย่าลืมกด “ที่นั่งเต็มแล้ว” นะ
+              {copy.myPosts.tipReminder(copy.myPosts.markFull)}
             </Text>
           </Stack>
         </CardBody>

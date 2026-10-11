@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Page, Stack, NarrowCenter } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
 import { Card, CardBody } from "@/components/ui/card";
@@ -9,36 +11,26 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import { BackLink } from "@/components/ui/nav";
 import { IconBox } from "@/components/ui/icon";
+import { copy } from "@/content/copy";
+import { useRequestOtp, useVerifyOtp } from "@/features/auth/hooks/otp-queries";
+import { otpSchema, phoneSchema, type OtpValues, type PhoneValues } from "@/features/auth/schemas/otp-schema";
 import { Check } from "lucide-react";
 
 type Step = "phone" | "otp" | "done";
 
 const RESEND_COOLDOWN = 60;
 const MAX_ATTEMPTS = 5;
-const MEMBER_KEY = "pdk-member-phone";
-
-function makeOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-const THAI_DIGITS = "๐๑๒๓๔๕๖๗๘๙";
-const ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-
-function normalizePhone(v: string) {
-  return v
-    .replace(/[๐-๙]/g, (d) => String(THAI_DIGITS.indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String(ARABIC_DIGITS.indexOf(d)))
-    .replace(/[^\d]/g, "");
-}
-
 export default function RegisterPage() {
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
   const [expected, setExpected] = useState("");
   const [error, setError] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [resendIn, setResendIn] = useState(0);
+  const requestOtp = useRequestOtp();
+  const verifyOtpMutation = useVerifyOtp();
+  const phoneForm = useForm<PhoneValues>({ resolver: zodResolver(phoneSchema), defaultValues: { phone: "" } });
+  const otpForm = useForm<OtpValues>({ resolver: zodResolver(otpSchema), defaultValues: { otp: "" } });
 
   useEffect(() => {
     if (step !== "otp" || resendIn <= 0) return;
@@ -46,28 +38,24 @@ export default function RegisterPage() {
     return () => clearTimeout(t);
   }, [step, resendIn]);
 
-  function sendOtp(to: string) {
-    const digits = normalizePhone(to);
-    if (digits.length < 9) {
-      setError("กรุณากรอกเบอร์โทรให้ครบ");
+  async function sendOtp(to: string) {
+    const parsed = phoneSchema.safeParse({ phone: to });
+    if (!parsed.success) {
+      setError(copy.register.phoneIncomplete);
       return;
     }
-    setExpected(makeOtp());
-    setOtp("");
+    const result = await requestOtp.mutateAsync(to);
+    setExpected(result.demoCode);
+    otpForm.reset({ otp: "" });
     setError("");
     setAttempts(0);
     setResendIn(RESEND_COOLDOWN);
     setStep("otp");
   }
 
-  function verify(e: React.FormEvent) {
-    e.preventDefault();
-    if (otp.trim() === expected) {
-      try {
-        localStorage.setItem(MEMBER_KEY, normalizePhone(phone));
-      } catch {
-        // localStorage ไม่พร้อมก็ข้ามได้ ยังถือว่ายืนยันสำเร็จในรอบ demo
-      }
+  async function verify(values: OtpValues) {
+    const result = await verifyOtpMutation.mutateAsync({ phone, otp: values.otp });
+    if (result.ok) {
       setError("");
       setStep("done");
       return;
@@ -75,7 +63,7 @@ export default function RegisterPage() {
     const next = attempts + 1;
     setAttempts(next);
     setError(
-      next >= MAX_ATTEMPTS ? "กรอกรหัสผิดหลายครั้ง กดส่งรหัสใหม่อีกครั้ง" : "รหัสไม่ถูกต้อง ลองอีกครั้ง"
+      next >= MAX_ATTEMPTS ? copy.register.tooManyAttempts : copy.register.wrongOtp
     );
   }
 
@@ -89,14 +77,14 @@ export default function RegisterPage() {
                 <IconBox icon={Check} size="lg" tone="success" shape="circle" />
                 <Stack gap="sm" align="center">
                   <Title as="h1" size="name">
-                    ยืนยันเบอร์แล้ว
+                    {copy.register.doneTitle}
                   </Title>
                   <Text size="meta" tone="muted" align="center" narrow>
-                    เบอร์ {phone} ช่วยเพิ่มความน่าเชื่อถือให้คนหารถกล้าติดต่อมา
+                    {copy.register.doneHint(phone)}
                   </Text>
                 </Stack>
                 <Button width="full" asChild>
-                  <Link href="/post">ไปแชร์รถเลย</Link>
+                  <Link href="/post">{copy.register.goShare}</Link>
                 </Button>
               </Stack>
             </CardBody>
@@ -110,31 +98,28 @@ export default function RegisterPage() {
     <Page variant="landing">
       <NarrowCenter>
         <Stack gap="md">
-          <BackLink href="/share" label="กลับ" />
+          <BackLink href="/share" label={copy.shared.back} />
           <Title as="h1" size="hero">
-            สมัครสมาชิก
+            {copy.register.title}
           </Title>
           <Text size="meta" tone="muted" align="center">
-            ใช้แค่เบอร์ เพิ่มความน่าเชื่อถือ
+            {copy.register.subtitle}
           </Text>
 
           {step === "phone" ? (
             <Card>
               <CardBody pad="even">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    sendOtp(phone);
-                  }}
-                >
+                <form onSubmit={phoneForm.handleSubmit((values) => {
+                  setPhone(values.phone);
+                  return sendOtp(values.phone);
+                })}>
                   <Stack gap="md">
-                    <Field label="เบอร์โทร">
+                    <Field label={copy.shared.phoneLabel}>
                       <Input
                         required
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
                         placeholder="08x-xxx-xxxx"
                         inputMode="tel"
+                        {...phoneForm.register("phone")}
                       />
                     </Field>
                     {error ? (
@@ -143,7 +128,7 @@ export default function RegisterPage() {
                       </Text>
                     ) : null}
                     <Button type="submit" size="lg" width="full">
-                      ส่งรหัส OTP
+                      {copy.register.sendOtp}
                     </Button>
                   </Stack>
                 </form>
@@ -152,22 +137,23 @@ export default function RegisterPage() {
           ) : (
             <Card>
               <CardBody pad="even">
-                <form onSubmit={verify}>
+                <form onSubmit={otpForm.handleSubmit(verify)}>
                   <Stack gap="md">
                     <Stack gap="sm">
                       <Text size="meta" tone="muted" align="center">
-                        ส่งรหัส 6 หลักไปที่ {phone}
+                        {copy.register.otpSentTo(phone)}
                       </Text>
                       <Text size="micro" tone="faint" align="center">
-                        Demo: รหัสของคุณคือ {expected}
+                        {copy.register.demoCode(expected)}
                       </Text>
                     </Stack>
-                    <Field label="รหัส OTP 6 หลัก">
+                    <Field label={copy.register.otpLabel}>
                       <Input
                         required
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value.replace(/[^\d]/g, "").slice(0, 6))}
-                        placeholder="••••••"
+                        {...otpForm.register("otp", {
+                          onChange: (e) => otpForm.setValue("otp", e.target.value.replace(/[^\d]/g, "").slice(0, 6)),
+                        })}
+                        placeholder={copy.register.otpPlaceholder}
                         inputMode="numeric"
                         maxLength={6}
                       />
@@ -178,7 +164,7 @@ export default function RegisterPage() {
                       </Text>
                     ) : null}
                     <Button type="submit" size="lg" width="full">
-                      ยืนยันรหัส
+                      {copy.register.verifyOtp}
                     </Button>
                     <Stack gap="sm">
                       <Button
@@ -188,10 +174,10 @@ export default function RegisterPage() {
                         disabled={resendIn > 0}
                         onClick={() => sendOtp(phone)}
                       >
-                        {resendIn > 0 ? `ส่งอีกครั้งใน ${resendIn} วิ` : "ส่งรหัสอีกครั้ง"}
+                        {resendIn > 0 ? copy.register.resendIn(resendIn) : copy.register.resend}
                       </Button>
                       <Button type="button" variant="ghost" width="full" onClick={() => setStep("phone")}>
-                        เปลี่ยนเบอร์โทร
+                        {copy.register.changePhone}
                       </Button>
                     </Stack>
                   </Stack>

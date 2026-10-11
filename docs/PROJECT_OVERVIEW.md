@@ -1,6 +1,6 @@
 # Project Overview
 
-`ไปด้วยกัน` is a small ride-sharing web app for matching people who travel in the same direction. The current product is a prototype built with Next.js App Router, static mock data, and reusable UI primitives.
+`ไปด้วยกัน` is a small ride-sharing web app for matching people who travel in the same direction. The current product is a prototype built with Next.js App Router, mock service layers backed by static data, React Query, React Hook Form, Zod schemas, and reusable UI primitives.
 
 ## Product Purpose
 
@@ -15,7 +15,7 @@ The app does not handle booking, payment, or chat inside the product. Users cont
 
 ### Find a Ride
 
-1. User starts from `/` or opens `/find` directly.
+1. User starts from `/`, which is the ride search page.
 2. User searches by destination or route keyword.
 3. User filters by day: วันนี้ or พรุ่งนี้.
 4. User opens an offer detail page.
@@ -29,7 +29,7 @@ The app does not handle booking, payment, or chat inside the product. Users cont
 4. User enters origin, destination, departure time, available seats, route, pickup point, and contact details.
 3. User submits the form.
 4. The app shows a success state.
-5. User can go to `/my-posts` or `/find`.
+5. User can go to `/my-posts` or `/`.
 
 ### Manage My Shared Routes
 
@@ -60,10 +60,9 @@ The shell contains:
 
 | Route | Page | Purpose |
 | --- | --- | --- |
-| `/` | Home page | Minimal landing page for choosing find/share action |
+| `/` | Find ride page | Default entry: search and browse available ride offers |
 | `/share` | Share choice page | Ask whether to continue as Guest or member before posting |
 | `/register` | Register page | Phone-only member registration before sharing |
-| `/find` | Find ride page | Search and browse available ride offers |
 | `/offer/[id]` | Offer detail page | Show full ride information and contact actions |
 | `/post` | Post ride page | Form for sharing available seats |
 | `/my-posts` | My posts page | Manage routes shared by the current user |
@@ -71,9 +70,9 @@ The shell contains:
 
 ## Current Product Constraints
 
-- Data is static mock data from `src/data`.
+- Data is served through mock service layers backed by static data from `src/features/*/data`.
 - There is no backend or database yet.
-- Form submissions update local React state only.
+- Forms use React Hook Form + Zod, but service mutations are still mock/local.
 - Contact actions use `tel:` and LINE external links.
 - Authentication is not implemented; `users.me` acts as the current user.
 - `/register` uses a mock OTP shown on screen; there is no SMS provider yet.
@@ -89,5 +88,10 @@ The shell contains:
 | Organisms | `src/components/organisms` | Larger sections like feed, nav, profile card |
 | Molecules | `src/components/molecules` | Cards and contact actions |
 | UI primitives | `src/components/ui` | Design system primitives: layout, card, typography, buttons, inputs |
-| Mock data | `src/data` | Static rides and users |
+| Services | `src/features/*/services` | Mock API-shaped service methods for rides, users, and OTP |
+| Query hooks | `src/features/*/hooks` | React Query hooks for client-side data fetching and mutations |
+| Schemas | `src/features/*/schemas` | Zod schemas used by React Hook Form and future API contracts |
+| Mock data | `src/features/*/data` | Static rides and users backing the mock services |
+| UI copy | `src/content/copy.ts` | Central Thai labels, titles, buttons, placeholders, aria-labels, messages |
 | Domain types | `src/lib/types.ts` | `UserProfile` and `RideOffer` |
+| API contract | `docs/API_CONTRACT.md` | REST endpoints, request/response schemas, product rules, and BE open questions |

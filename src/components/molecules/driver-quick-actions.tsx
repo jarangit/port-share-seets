@@ -4,6 +4,7 @@ import { Cluster } from "@/components/ui/layout";
 import { Phone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
+import { copy } from "@/content/copy";
 
 /* Facebook brand icon from react-icons — cast to plug into the app's
    Icon API like any LucideIcon. */
@@ -30,7 +31,7 @@ export function DriverQuickActions({
   return (
     <Cluster gap="sm">
       <SoftIconButton asChild>
-        <a href={`tel:${phone.replace(/-/g, "")}`} aria-label={`โทรหา ${driverName}`}>
+        <a href={`tel:${phone.replace(/-/g, "")}`} aria-label={copy.contact.callDriver(driverName)}>
           <Icon icon={Phone} size="xs" />
         </a>
       </SoftIconButton>
@@ -39,7 +40,7 @@ export function DriverQuickActions({
           href={`https://line.me/ti/p/~${lineId}`}
           target="_blank"
           rel="noreferrer"
-          aria-label={`LINE หา ${driverName}`}
+          aria-label={copy.contact.lineDriver(driverName)}
         >
           <Icon icon={LineIcon} size="xs" />
         </a>
@@ -50,7 +51,7 @@ export function DriverQuickActions({
             href={facebookUrl}
             target="_blank"
             rel="noreferrer"
-            aria-label={`ดูโปรไฟล์ Facebook ของ ${driverName}`}
+            aria-label={copy.contact.facebookDriver(driverName)}
           >
             <Icon icon={Facebook} size="xs" />
           </a>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { copy } from "@/content/copy";
 
 /* AppFrame — app background shell */
 export function AppFrame({ children }: { children: ReactNode }) {
@@ -64,7 +65,7 @@ export function TopBarScrim({ onClose }: { onClose: () => void }) {
   return (
     <button
       type="button"
-      aria-label="ปิดเมนู"
+      aria-label={copy.topBar.dismissMenu}
       onClick={onClose}
       className="fixed inset-0 z-30 bg-overlay lg:hidden"
     />

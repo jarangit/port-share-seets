@@ -1,0 +1,218 @@
+/* Central UI copy — every static Thai label, title, button, placeholder,
+   aria-label, and message lives here so product wording can be reviewed
+   and changed in one place.
+   Not included: mock content data (names, routes, plates, driver notes in
+   the features data folders), technical route paths, form field names,
+   and storage keys. */
+
+export const copy = {
+  brand: {
+    name: "ไปด้วยกัน",
+    description: "หาคนไปทางเดียวกัน หรือแชร์ที่ว่างในรถของคุณ",
+  },
+
+  nav: {
+    findRide: "หารถ",
+    myRoutes: "เส้นทางของฉัน",
+    profile: "ฉัน",
+    shareRide: "แชร์รถ",
+    shareSeats: "แชร์ที่ว่าง",
+  },
+
+  shared: {
+    back: "กลับ",
+    today: "วันนี้",
+    tomorrow: "พรุ่งนี้",
+    full: "เต็มแล้ว",
+    edit: "แก้ไข",
+    openSeats: "ยังรับอยู่",
+    phoneLabel: "เบอร์โทร",
+    postedAgo: (value: string) => `โพสต์เมื่อ ${value}`,
+    availableSeats: (count: number) => `ว่าง ${count} ที่`,
+    tripMeta: (date: string, time: string) => `${date} • ออก ${time} น.`,
+    seatsMeta: (left: number, total: number) => `ว่าง ${left}/${total} ที่`,
+    vehicleColor: (color: string) => `สี${color}`,
+    vehiclePlate: (plate: string) => `ทะเบียน ${plate}`,
+    lineLabel: (id: string) => `LINE: ${id}`,
+  },
+
+  header: {
+    todayRideCount: (count: number) => `วันนี้มีรถ ${count} คัน`,
+  },
+
+  sidebar: {
+    promo: "มีที่ว่างให้คนไปด้วยไหม?",
+  },
+
+  topBar: {
+    backToSearch: "กลับไปช่องค้นหา",
+    openMenu: "เปิดเมนู",
+    closeMenu: "ปิดเมนู",
+    dismissMenu: "ปิดเมนู",
+  },
+
+  home: {
+    title: "วันนี้ไปไหน?",
+  },
+
+  find: {
+    destinationPlaceholder: "พิมพ์ปลายทาง เช่น อโศก",
+    showFilters: "แสดงตัวกรอง",
+    hideFilters: "ซ่อนตัวกรอง",
+    allVehicles: "ทั้งหมด",
+    resultCount: (day: string, count: number) => `${day} • มีรถ ${count} คัน`,
+    resultCountFiltered: (day: string, count: number) => `${day} • มีรถที่ไปทางนั้น ${count} คัน`,
+    emptyTitle: "ยังไม่มีรถที่ไปทางนี้",
+    emptyHint: "ลองเปลี่ยนปลายทาง หรือดูวันอื่น",
+    loadingTitle: "กำลังหารถให้คุณ",
+    loadingHint: "รอสักครู่",
+    errorTitle: "ยังโหลดข้อมูลไม่ได้",
+    errorHint: "ลองใหม่อีกครั้ง",
+    clearSearch: "ล้างการค้นหา",
+  },
+
+  offerCard: {
+    cardLabel: (origin: string, destination: string, time: string, seats: number) =>
+      `${origin} ไป ${destination} ออก ${time} น. ว่าง ${seats} ที่`,
+    driverLabel: (name: string) => `ดูรายละเอียดรถของ ${name}`,
+    viaPrefix: "ผ่านทาง",
+    tripsShared: (count: number) => `แชร์การเดินทาง ${count} ครั้ง`,
+  },
+
+  offer: {
+    backToAll: "กลับไปดูรถ",
+    routeSectionTitle: "เส้นทางที่ผ่าน",
+    viewFullProfile: "ดูโปรไฟล์เต็ม",
+    hideFullProfile: "ซ่อนโปรไฟล์เต็ม",
+    seeOtherOffers: "ดูรถคันอื่น",
+  },
+
+  vehicle: {
+    car: "รถยนต์",
+    motorbike: "มอเตอร์ไซค์",
+  },
+
+  trust: {
+    phone: "เบอร์โทร",
+    identity: "ตัวตน",
+    verified: "ยืนยันแล้ว",
+    partial: "ยืนยันบางส่วน",
+    unverifiedIdentity: "ยังไม่ได้ยืนยันตัวตน",
+    report: "รายงาน",
+    block: "บล็อก",
+    memberStats: (since: string, count: number) => `สมาชิกตั้งแต่ ${since} • แชร์รถแล้ว ${count} ครั้ง`,
+  },
+
+  contact: {
+    call: "โทร",
+    callDriver: (name: string) => `โทรหา ${name}`,
+    lineDriver: (name: string) => `LINE หา ${name}`,
+    facebookDriver: (name: string) => `ดูโปรไฟล์ Facebook ของ ${name}`,
+  },
+
+  share: {
+    title: "เริ่มแชร์แบบไหนดี?",
+    guestTitle: "Guest",
+    guestDescription: "เริ่มได้เลย ไม่ต้องสมัคร",
+    memberTitle: "สมาชิก",
+    memberDescription: "ยืนยันเบอร์ ให้คนติดต่อมั่นใจขึ้น",
+    guestNote: "Guest ใช้งานได้ทันที ไม่ต้องจำรหัส",
+  },
+
+  register: {
+    title: "สมัครสมาชิก",
+    subtitle: "ยืนยันเบอร์ เพื่อให้คนติดต่อมั่นใจขึ้น",
+    sendOtp: "ส่งรหัส OTP",
+    otpSentTo: (phone: string) => `ส่งรหัส 6 หลักไปที่ ${phone}`,
+    demoCode: (code: string) => `Demo: รหัสของคุณคือ ${code}`,
+    otpLabel: "รหัส OTP 6 หลัก",
+    otpPlaceholder: "••••••",
+    phoneIncomplete: "กรอกเบอร์โทรให้ครบก่อนนะ",
+    wrongOtp: "รหัสไม่ถูกต้อง ลองอีกครั้ง",
+    tooManyAttempts: "ลองขอรหัสใหม่อีกครั้ง",
+    verifyOtp: "ยืนยันรหัส",
+    resendIn: (seconds: number) => `ส่งอีกครั้งใน ${seconds} วิ`,
+    resend: "ส่งรหัสอีกครั้ง",
+    changePhone: "เปลี่ยนเบอร์โทร",
+    doneTitle: "ยืนยันเบอร์แล้ว",
+    doneHint: (phone: string) => `เบอร์ ${phone} ช่วยให้คนติดต่อคุณมั่นใจขึ้น`,
+    goShare: "เริ่มแชร์ที่ว่าง",
+  },
+
+  post: {
+    title: "แชร์ที่ว่างในรถ",
+    stepLabel: (current: number, label: string) => `ขั้นตอนที่ ${current} จาก 3 • ${label}`,
+    routeStep: "เส้นทาง",
+    contactStep: "ช่องทางติดต่อ",
+    confirmStep: "ยืนยัน",
+    routeTitle: "บอกเส้นทางของคุณ",
+    originLabel: "ต้นทาง",
+    originPlaceholder: "เช่น หลักสี่",
+    destinationLabel: "ปลายทาง",
+    destinationPlaceholder: "เช่น สยาม",
+    timeLabel: "เวลาออก",
+    seatsLabel: "จำนวนที่ว่าง",
+    dayLabel: "วันที่เดินทาง",
+    vehicleLabel: "ประเภทรถ",
+    viaLabel: "เส้นทางผ่าน (คั่นด้วยคอมมา)",
+    viaPlaceholder: "วิภาวดี, อนุสาวรีย์",
+    next: "ถัดไป",
+    expiryNotice: "โพสต์จะแสดง 48 ชั่วโมง แล้วหายไปเอง",
+    contactTitle: "ให้คนติดต่อคุณได้",
+    nameLabel: "ชื่อผู้แชร์",
+    namePlaceholder: "เช่น ต้น",
+    phonePlaceholder: "08x-xxx-xxxx",
+    lineLabel: "LINE ID",
+    linePlaceholder: "line id ของคุณ",
+    facebookLabel: "Facebook URL",
+    facebookPlaceholder: "เช่น https://www.facebook.com/...",
+    noteLabel: "รายละเอียดเพิ่มเติม",
+    notePlaceholder: "เช่น ออกทุกเช้า ทักมาได้เลย",
+    backStep: "ย้อนกลับ",
+    submit: "แชร์เส้นทาง",
+    freeNote: "แชร์ได้ฟรี ไม่มีค่าใช้จ่าย",
+    successTitle: "โพสต์พร้อมแล้ว",
+    successContactHint: "ถ้ามีใครไปทางเดียวกัน เขาจะติดต่อคุณทางโทรหรือ LINE",
+    successExpiry: "โพสต์ของคุณจะหายไปในอีก 48 ชั่วโมง",
+    viewYourPost: "ดูโพสต์ของคุณ",
+    justNow: "เมื่อสักครู่",
+    previewTitle: "ดูโพสต์ก่อนแชร์",
+    previewHint: "นี่คือหน้าที่คนอื่นจะเห็น",
+    editData: "แก้ไขข้อมูล",
+    confirmShare: "ยืนยันแชร์เส้นทาง",
+  },
+
+  myPosts: {
+    title: "โพสต์ของฉัน",
+    shareMore: "แชร์เพิ่ม",
+    markFull: "ที่นั่งเต็มแล้ว",
+    reopen: "รับอีกครั้ง",
+    tipTitle: "คนที่ไปทางเดียวกันจะติดต่อคุณทางโทรหรือ LINE",
+    tipReminder: (fullLabel: string) => `ที่นั่งเต็มเมื่อไหร่ อย่าลืมกด “${fullLabel}” นะ`,
+  },
+
+  profile: {
+    title: "ฉัน",
+    loadingTitle: "กำลังโหลดโปรไฟล์",
+    loadingHint: "รอสักครู่",
+    settings: "ตั้งค่า",
+    verifyTitle: "ความน่าเชื่อถือ",
+    phoneRow: "เบอร์โทร",
+    idRow: "บัตรประชาชน / ใบขับขี่",
+    unverified: "ยังไม่ได้ยืนยัน",
+    boostTrust: "เพิ่มความน่าเชื่อถือ",
+    vehicleTitle: "รถของฉัน",
+    contactTitle: "ช่องทางติดต่อ",
+    facebookLabel: "Facebook",
+    save: "บันทึก",
+    routesTitle: (count: number) => `เส้นทางที่ฉันแชร์ (${count})`,
+    viewAll: "ดูทั้งหมด",
+    memberSince: (since: string) => `สมาชิกตั้งแต่ ${since}`,
+  },
+
+  notFound: {
+    title: "ไม่พบหน้านี้",
+    description: "หน้านี้อาจถูกย้ายหรือลบไปแล้ว กลับไปหารถที่ไปทางเดียวกันกันต่อ",
+    backHome: "กลับไปหารถ",
+  },
+} as const;

@@ -1,33 +1,27 @@
-import { Page, Stack, NarrowCenter } from "@/components/ui/layout";
+import Link from "next/link";
+import { RideOfferFeed } from "@/features/rides/components/ride-offer-feed";
+import { Button } from "@/components/ui/button";
+import { Page, PageHeader } from "@/components/ui/layout";
 import { Title } from "@/components/ui/typography";
-import { ActionCard } from "@/components/ui/cards";
-import { Search, CarFront } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
+import { copy } from "@/content/copy";
+import { Plus } from "lucide-react";
 
 export default function HomePage() {
   return (
-    <Page variant="landing">
-      <NarrowCenter>
-        <Stack gap="md">
-          <Title as="h1" size="hero">
-            วันนี้จะไปไหน?
-          </Title>
+    <Page>
+      <PageHeader layout="row">
+        <Title as="h1" size="page">
+          {copy.home.title}
+        </Title>
+        <Button size="sm" width="shrink" asChild>
+          <Link href="/share">
+            <Icon icon={Plus} size="xs" /> {copy.nav.shareRide}
+          </Link>
+        </Button>
+      </PageHeader>
 
-          <Stack gap="md">
-            <ActionCard
-              href="/find"
-              tone="ink"
-              icon={Search}
-              title="หารถ"
-            />
-            <ActionCard
-              href="/share"
-              tone="raised"
-              icon={CarFront}
-              title="แชร์รถ"
-            />
-          </Stack>
-        </Stack>
-      </NarrowCenter>
+      <RideOfferFeed />
     </Page>
   );
 }

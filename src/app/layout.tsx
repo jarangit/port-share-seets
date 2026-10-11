@@ -1,25 +1,34 @@
 import type { Metadata } from "next";
+import { Inter, Noto_Sans_Thai } from "next/font/google";
 import { AppShell } from "@/components/templates/app-shell";
+import { Providers } from "@/app/providers";
+import { copy } from "@/content/copy";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+});
+
+const notoSansThai = Noto_Sans_Thai({
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-sans-thai",
+});
+
 export const metadata: Metadata = {
-  title: "ไปด้วยกัน",
-  description: "หารถที่ไปทางเดียวกัน หรือแชร์ที่ว่างในรถของคุณ",
+  title: copy.brand.name,
+  description: copy.brand.description,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="th" {...{ className: `${notoSansThai.variable} ${inter.variable}` }}>
       <body>
-        <AppShell>{children}</AppShell>
+        <Providers>
+          <AppShell>{children}</AppShell>
+        </Providers>
       </body>
     </html>
   );

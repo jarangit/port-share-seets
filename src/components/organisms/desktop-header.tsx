@@ -5,6 +5,7 @@ import { Cluster } from "@/components/ui/layout";
 import { Text } from "@/components/ui/typography";
 import { Icon, BrandMark } from "@/components/ui/icon";
 import { DesktopHeaderFrame, HeaderInner } from "@/components/ui/chrome";
+import { copy } from "@/content/copy";
 import { Plus } from "lucide-react";
 
 export function DesktopHeader() {
@@ -12,16 +13,16 @@ export function DesktopHeader() {
     <DesktopHeaderFrame>
       <HeaderInner>
         <Link href="/">
-          <BrandMark name="ไปด้วยกัน" />
+          <BrandMark name={copy.brand.name} />
         </Link>
 
         <Cluster gap="md">
           <Text size="meta" tone="mist" weight="semibold">
-            วันนี้มีรถ 6 คัน
+            {copy.header.todayRideCount(6)}
           </Text>
           <Button variant="secondary" size="sm" asChild>
             <Link href="/share">
-              <Icon icon={Plus} size="xs" /> แชร์รถ
+              <Icon icon={Plus} size="xs" /> {copy.nav.shareRide}
             </Link>
           </Button>
         </Cluster>

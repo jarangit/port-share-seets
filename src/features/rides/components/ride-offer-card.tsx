@@ -10,6 +10,7 @@ import { ArrowRight, BadgeCheck, ChevronRight, Clock, Route as RouteIcon, Users 
 import type { ReactNode } from "react";
 import type { RideOffer } from "@/features/rides/types";
 import { vehicleMeta } from "@/components/atoms/badges";
+import { copy } from "@/content/copy";
 
 /* CardSection — link wrapper, or a plain fragment in preview mode
    (confirmation screen shows the real card without navigating away). */
@@ -45,7 +46,7 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
           <Stack gap="md">
             <CardSection
               href={href}
-              label={`${offer.origin} ไป ${offer.destination} ออก ${offer.departureTime} น. ว่าง ${offer.seatsLeft} ที่`}
+              label={copy.offerCard.cardLabel(offer.origin, offer.destination, offer.departureTime, offer.seatsLeft)}
               interactive={interactive}
             >
               <Stack gap="md">
@@ -55,7 +56,7 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
                   </Title>
                   <Cluster gap="sm">
                     <Badge variant="success">
-                      <Icon icon={Users} size="xs" /> ว่าง {offer.seatsLeft} ที่
+                      <Icon icon={Users} size="xs" /> {copy.shared.availableSeats(offer.seatsLeft)}
                     </Badge>
                     <Icon icon={ChevronRight} size="sm" tone="faint" />
                   </Cluster>
@@ -64,16 +65,16 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
                 <Stack gap="sm">
                   <Text size="meta" tone="soft" weight="semibold">
                     <Icon icon={Clock} size="xs" tone="faint" inline spaced="after" />
-                    {offer.dateLabel} • ออก {offer.departureTime} น.
+                    {copy.shared.tripMeta(offer.dateLabel, offer.departureTime)}
                   </Text>
                   <Text size="caption" tone="muted" lines={1}>
                     <Icon icon={RouteIcon} size="xs" tone="faint" inline spaced="after" />
-                    ผ่านทาง {offer.via.join(" • ")}
+                    {copy.offerCard.viaPrefix} {offer.via.join(" • ")}
                   </Text>
                   <Text size="caption" tone="muted">
                     <Icon icon={vehicle.icon} size="xs" tone="faint" inline spaced="after" />
-                    {vehicle.label} • {offer.vehicle.model} • สี{offer.vehicle.color} • ทะเบียน{" "}
-                    {offer.vehicle.plate}
+                    {vehicle.label} • {offer.vehicle.model} • {copy.shared.vehicleColor(offer.vehicle.color)} •{" "}
+                    {copy.shared.vehiclePlate(offer.vehicle.plate)}
                   </Text>
                 </Stack>
               </Stack>
@@ -83,7 +84,7 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
               <Grow>
                 <CardSection
                   href={href}
-                  label={`ดูรายละเอียดรถของ ${offer.driver.name}`}
+                  label={copy.offerCard.driverLabel(offer.driver.name)}
                   interactive={interactive}
                 >
                   <Cluster gap="sm">
@@ -99,7 +100,7 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
                         {verified && <Icon icon={BadgeCheck} size="xs" tone="verified" />}
                       </Cluster>
                       <Text as="span" size="caption" tone="muted">
-                        แชร์การเดินทาง {offer.driver.sharedCount} ครั้ง
+                        {copy.offerCard.tripsShared(offer.driver.sharedCount)}
                       </Text>
                     </Stack>
                   </Cluster>

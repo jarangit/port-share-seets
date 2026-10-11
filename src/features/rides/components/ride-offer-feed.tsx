@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SearchInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Cluster, Grow, Stack } from "@/components/ui/layout";
@@ -9,21 +9,27 @@ import { Icon } from "@/components/ui/icon";
 import { SegmentedControl } from "@/components/ui/controls";
 import { EmptyState } from "@/components/ui/cards";
 import { RideOfferCard } from "@/features/rides/components/ride-offer-card";
-import { rideOffers } from "@/features/rides/data/rides";
+import { useRideOffers } from "@/features/rides/hooks/ride-offer-queries";
+import {
+  RIDE_SEARCH_INPUT_ID,
+  SEARCH_VISIBILITY_EVENT,
+  type SearchVisibilityDetail,
+} from "@/lib/search-shortcut";
 import type { VehicleType } from "@/features/rides/types";
 import { vehicleMeta } from "@/components/atoms/badges";
+import { copy } from "@/content/copy";
 import { Search, CarFront, SlidersHorizontal } from "lucide-react";
 
 type DayTab = "today" | "tomorrow";
 type VehicleFilter = "all" | VehicleType;
 
 const dayTabs: { id: DayTab; label: string }[] = [
-  { id: "today", label: "วันนี้" },
-  { id: "tomorrow", label: "พรุ่งนี้" },
+  { id: "today", label: copy.shared.today },
+  { id: "tomorrow", label: copy.shared.tomorrow },
 ];
 
 const vehicleTabs: { id: VehicleFilter; label: string }[] = [
-  { id: "all", label: "ทั้งหมด" },
+  { id: "all", label: copy.find.allVehicles },
   { id: "car", label: vehicleMeta.car.label },
   { id: "motorbike", label: vehicleMeta.motorbike.label },
 ];
@@ -33,18 +39,29 @@ export function RideOfferFeed() {
   const [day, setDay] = useState<DayTab>("today");
   const [vehicle, setVehicle] = useState<VehicleFilter>("all");
   const [expanded, setExpanded] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const results = useMemo(() => {
-    const t = to.trim();
-    return rideOffers.filter((o) => {
-      if (o.seatsLeft === 0) return false;
-      if (day === "today" && o.dateLabel !== "วันนี้") return false;
-      if (day === "tomorrow" && o.dateLabel !== "พรุ่งนี้") return false;
-      if (vehicle !== "all" && o.vehicle.type !== vehicle) return false;
-      if (t && !`${o.destination} ${o.via.join(" ")}`.includes(t)) return false;
-      return true;
-    });
-  }, [to, day, vehicle]);
+  /* Tell the mobile top bar whether the search input is on screen so it
+     can offer a shortcut back. Top inset matches the fixed top bar. */
+  useEffect(() => {
+    const el = searchRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        window.dispatchEvent(
+          new CustomEvent<SearchVisibilityDetail>(SEARCH_VISIBILITY_EVENT, {
+            detail: { visible: entry.isIntersecting },
+          })
+        );
+      },
+      { rootMargin: "-56px 0px 0px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const filters = useMemo(() => ({ q: to, day, vehicleType: vehicle }), [to, day, vehicle]);
+  const { data: results = [], isLoading, isError } = useRideOffers(filters);
 
   const hasQuery = to.trim() !== "" || vehicle !== "all";
   const isFiltering = day !== "today" || vehicle !== "all";
@@ -56,17 +73,19 @@ export function RideOfferFeed() {
           <Cluster gap="sm" align="center">
             <Grow>
               <SearchInput
+                id={RIDE_SEARCH_INPUT_ID}
+                ref={searchRef}
                 icon={Search}
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
-                placeholder="ปลายทางของคุณ เช่น อโศก"
+                placeholder={copy.find.destinationPlaceholder}
               />
             </Grow>
             <Button
               variant={expanded || isFiltering ? "default" : "secondary"}
               size="icon"
               onClick={() => setExpanded((v) => !v)}
-              aria-label={expanded ? "ซ่อนตัวกรอง" : "แสดงตัวกรอง"}
+              aria-label={expanded ? copy.find.hideFilters : copy.find.showFilters}
               aria-expanded={expanded}
             >
               <Icon icon={SlidersHorizontal} size="xs" />
@@ -82,15 +101,20 @@ export function RideOfferFeed() {
       </SearchPanel>
 
       <Text size="caption" tone="muted" weight="semibold">
-        {day === "today" ? "วันนี้" : "พรุ่งนี้"} •{" "}
-        {hasQuery ? `มีรถที่ไปทางนั้น ${results.length} คัน` : `มีรถ ${results.length} คัน`}
+        {hasQuery
+          ? copy.find.resultCountFiltered(day === "today" ? copy.shared.today : copy.shared.tomorrow, results.length)
+          : copy.find.resultCount(day === "today" ? copy.shared.today : copy.shared.tomorrow, results.length)}
       </Text>
 
-      {results.length === 0 ? (
+      {isLoading ? (
+        <EmptyState icon={CarFront} title={copy.find.loadingTitle} hint={copy.find.loadingHint} />
+      ) : isError ? (
+        <EmptyState icon={CarFront} title={copy.find.errorTitle} hint={copy.find.errorHint} />
+      ) : results.length === 0 ? (
         <EmptyState
           icon={CarFront}
-          title="ยังไม่มีรถตรงกับทางที่ค้นหา"
-          hint="ลองค้นหาปลายทางใกล้เคียงอีกครั้ง"
+          title={copy.find.emptyTitle}
+          hint={copy.find.emptyHint}
           action={
             hasQuery ? (
               <Button
@@ -102,7 +126,7 @@ export function RideOfferFeed() {
                   setVehicle("all");
                 }}
               >
-                <Icon icon={Search} size="xs" /> ล้างการค้นหา
+                <Icon icon={Search} size="xs" /> {copy.find.clearSearch}
               </Button>
             ) : undefined
           }

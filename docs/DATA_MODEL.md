@@ -1,6 +1,6 @@
 # Data Model
 
-The current app uses static mock data. There is no backend, database, auth session, or persistence layer yet.
+The current app uses mock service layers backed by static mock data. There is no backend, database, auth session, or real persistence layer yet.
 
 ## Domain Types
 
@@ -101,6 +101,8 @@ export interface RideOffer {
 
 ## Mock Data Files
 
+Application pages and feature components should not import these files directly. They should call the service layer in `src/features/*/services` or React Query hooks in `src/features/*/hooks`.
+
 ### `src/data/users.ts`
 
 Exports `users`, a record of `UserProfile` objects.
@@ -116,11 +118,11 @@ Exports three main items:
 
 ### `rideOffers`
 
-Public ride offers shown in `/find`.
+Public ride offers shown in `/`.
 
 Important behavior:
 
-- `/find` hides offers where `seatsLeft === 0`.
+- `/` hides offers where `seatsLeft === 0`.
 - `/offer/[id]` can still render full offers and show a full state.
 - Search checks `destination` and `via` text.
 - Day filtering checks `dateLabel`.
@@ -188,3 +190,23 @@ Recommended changes:
 - Add offer status: `open`, `full`, `closed`, or `expired`.
 - Store `seatsLeft` as derived or validated state.
 - Separate current user profile from public driver profile if privacy becomes important.
+
+## Current Service Layer
+
+The mock service layer is shaped to match future API endpoints:
+
+- `src/features/rides/services/rides-service.ts`
+  - `listRideOffers(filters)`
+  - `getRideOffer(id)`
+  - `listMyRideOffers()`
+  - `createRideOffer(input)`
+  - `updateRideOfferStatus(id, status)`
+  - `listStaticRideOfferParams()`
+- `src/features/users/services/users-service.ts`
+  - `getCurrentUser()`
+  - `updateCurrentUser(input)`
+- `src/features/auth/services/otp-service.ts`
+  - `requestOtp(phone)`
+  - `verifyOtp({ phone, otp })`
+
+React Query hooks live beside those services and should be the client-side entry point for interactive pages.

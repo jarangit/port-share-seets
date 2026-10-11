@@ -73,9 +73,9 @@
 
   /* PRIMITIVE — TYPOGRAPHY */
   --font-sans:
-    "Noto Sans Thai", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    var(--font-noto-sans-thai), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display:
-    "Noto Sans Thai", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    var(--font-noto-sans-thai), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-md: 16px;

@@ -8,11 +8,12 @@ import { Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
 import { NavItem } from "@/components/ui/nav";
 import { SidebarFrame, SideNav, SideCard } from "@/components/ui/chrome";
+import { copy } from "@/content/copy";
 
 const items = [
-  { href: "/find", label: "หารถ", icon: Search, match: ["/find", "/offer"] },
-  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
-  { href: "/profile", label: "ฉัน", icon: User, match: ["/profile"] },
+  { href: "/", label: copy.nav.findRide, icon: Search, match: ["/", "/offer"] },
+  { href: "/my-posts", label: copy.nav.myRoutes, icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
+  { href: "/profile", label: copy.nav.profile, icon: User, match: ["/profile"] },
 ];
 
 export function DesktopSidebar() {
@@ -33,10 +34,10 @@ export function DesktopSidebar() {
 
       <SideCard>
         <Stack gap="md">
-          <Text weight="bold">มีที่ว่างในรถไหม?</Text>
+          <Text weight="bold">{copy.sidebar.promo}</Text>
           <Button width="full" size="sm" asChild>
             <Link href="/share">
-              <Icon icon={Plus} size="xs" /> แชร์ที่ว่าง
+              <Icon icon={Plus} size="xs" /> {copy.nav.shareSeats}
             </Link>
           </Button>
         </Stack>

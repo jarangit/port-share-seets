@@ -9,6 +9,7 @@ import { InfoRow, ContactRow } from "@/components/ui/rows";
 import { Flag, Ban, Phone, BadgeCheck } from "lucide-react";
 import type { UserProfile } from "@/features/users/types";
 import { vehicleMeta } from "@/components/atoms/badges";
+import { copy } from "@/content/copy";
 
 export function TrustProfileCard({ user: u }: { user: UserProfile }) {
   return (
@@ -25,18 +26,18 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
           <Cluster gap="sm" justify="center" wrap>
             {u.verifiedPhone && (
               <Badge variant="success">
-                <Icon icon={BadgeCheck} size="xs" /> เบอร์โทร
+                <Icon icon={BadgeCheck} size="xs" /> {copy.trust.phone}
               </Badge>
             )}
             {u.verifiedId && (
               <Badge variant="success">
-                <Icon icon={BadgeCheck} size="xs" /> ตัวตน
+                <Icon icon={BadgeCheck} size="xs" /> {copy.trust.identity}
               </Badge>
             )}
-            {!u.verifiedId && <Badge variant="secondary">ยังไม่ยืนยันตัวตน</Badge>}
+            {!u.verifiedId && <Badge variant="secondary">{copy.trust.unverifiedIdentity}</Badge>}
           </Cluster>
           <Text size="caption" tone="muted" align="center">
-            สมาชิกตั้งแต่ {u.memberSince} • แชร์รถแล้ว {u.sharedCount} ครั้ง
+            {copy.trust.memberStats(u.memberSince, u.sharedCount)}
           </Text>
         </Stack>
 
@@ -48,7 +49,7 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
                 {vehicleMeta[u.vehicle.type].label} • {u.vehicle.model}
               </Text>
               <Text as="span" tone="muted">
-                สี{u.vehicle.color} • ทะเบียน {u.vehicle.plate}
+                {copy.shared.vehicleColor(u.vehicle.color)} • {copy.shared.vehiclePlate(u.vehicle.plate)}
               </Text>
             </InfoRow>
           </>
@@ -66,7 +67,7 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
               {u.lineId && (
                 <ContactRow icon={LineIcon}>
                   <Text as="span" weight="bold">
-                    LINE: {u.lineId}
+                    {copy.shared.lineLabel(u.lineId)}
                   </Text>
                 </ContactRow>
               )}
@@ -77,10 +78,10 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
         <Separator />
         <Cluster gap="sm">
           <Button variant="outline" width="grow" size="sm">
-            <Icon icon={Flag} size="xs" /> รายงาน
+            <Icon icon={Flag} size="xs" /> {copy.trust.report}
           </Button>
           <Button variant="ghost" width="grow" size="sm">
-            <Icon icon={Ban} size="xs" /> บล็อก
+            <Icon icon={Ban} size="xs" /> {copy.trust.block}
           </Button>
         </Cluster>
       </CardBody>

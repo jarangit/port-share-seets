@@ -32,10 +32,12 @@ export function Surface({
   return <div className={cn(surfaceVariants({ tone, pad }))}>{children}</div>;
 }
 
-/* SearchPanel — route search container (consumes search component tokens) */
+/* SearchPanel — route search container (consumes search component tokens).
+   scroll-mt keeps the panel clear of the fixed mobile top bar on
+   anchor/focus scrolls. */
 export function SearchPanel({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-card bg-surface p-3">
+    <div className="scroll-mt-20 rounded-card bg-surface p-3">
       {children}
     </div>
   );

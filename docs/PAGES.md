@@ -2,42 +2,61 @@
 
 This document explains each app route, what UI sections it contains, how users interact with it, and which components/data it depends on.
 
-## `/` - Home Page
+Static UI copy (labels, titles, buttons, placeholders, aria-labels, messages) lives in `src/content/copy.ts`. Mock route/user content stays in `src/features/*/data`.
+
+Client-side data fetching and mutations use React Query hooks from `src/features/*/hooks`. Forms use React Hook Form with Zod schemas from `src/features/*/schemas`. The hooks call mock services in `src/features/*/services`, which are shaped to be replaced by real API calls later.
+
+## `/` - Find Ride Page
 
 ### Purpose
 
-Minimal landing page that lets users choose their main intent: find a ride or share a ride.
+Default entry page. Let users search and browse available ride offers without an extra tap.
 
 ### UI Sections
 
-- Hero title: `วันนี้จะไปไหน?`
-- Primary action card: `หารถ`
-- Secondary action card: `แชร์รถ`
+- Page header row: title `จะไปที่ไหน?` plus `แชร์รถ` button linking to `/share`
+- Search panel (white card, destination input, day pills)
+- Day segmented control: วันนี้ / พรุ่งนี้
+- Result count text
+- Ride card list (whole card links to detail, no contact buttons in list)
+- Empty state when no offers match
 
 ### User Actions
 
-- Click `หารถ` to go to `/find`.
 - Click `แชร์รถ` to go to `/share`.
+- When scrolled past the search input on mobile, a search icon fades into the top bar; tap it to scroll back and focus the search field.
+- Type a destination or route keyword.
+- Switch between วันนี้ and พรุ่งนี้.
+- Tap a ride card to open its detail page.
+- Contact the driver from the detail page.
+- Clear search from the empty state when a query has no results.
 
 ### Main Components
 
-- `Page` with `variant="landing"`
-- `NarrowCenter`
-- `Stack`
-- `Title`
-- `ActionCard`
+- `RideOfferFeed`
+- `Input`
+- `SegmentedControl`
+- `RideOfferCard`
+- `EmptyState`
+- `ContactActions`
+- `DetailLink`
 
 ### Data Source
 
-No runtime data is used on the current home page.
+Uses `rideOffers` from `src/data/rides.ts`.
 
 ### Behavior / State
 
-No local state. The page is a static navigation choice.
+- `RideOfferFeed` is a client component.
+- Local state stores `to` search text and `day` filter.
+- Results exclude offers where `seatsLeft === 0`.
+- Today filter matches `dateLabel === "วันนี้"`.
+- Tomorrow filter matches `dateLabel === "พรุ่งนี้"`.
+- Search matches against `destination` and `via` text.
 
 ### Notes for Future Changes
 
-Keep this page minimal. If stats or extra links are added later, make sure they do not duplicate the two main CTAs.
+If backend search is added, this page should move filtering from local array filtering to a query/API boundary while preserving the same UI behavior.
 
 ## `/share` - Share Choice Page
 
@@ -132,56 +151,6 @@ No backend is used. The OTP is generated in local React state and shown as a dem
 
 Replace the mock OTP with a real SMS OTP provider: send code from an API route, verify server-side, enforce rate limits, then create the member account and route verified members into `/post` with their profile prefilled.
 
-## `/find` - Find Ride Page
-
-### Purpose
-
-Let users search and browse available ride offers.
-
-### UI Sections
-
-- Page title: `จะไปที่ไหน?`
-- Search panel (white card, destination input, day pills)
-- Day segmented control: วันนี้ / พรุ่งนี้
-- Result count text
-- Ride card list (whole card links to detail, no contact buttons in list)
-- Empty state when no offers match
-
-### User Actions
-
-- Type a destination or route keyword.
-- Switch between วันนี้ and พรุ่งนี้.
-- Tap a ride card to open its detail page.
-- Contact the driver from the detail page.
-- Clear search from the empty state when a query has no results.
-
-### Main Components
-
-- `RideOfferFeed`
-- `Input`
-- `SegmentedControl`
-- `RideOfferCard`
-- `EmptyState`
-- `ContactActions`
-- `DetailLink`
-
-### Data Source
-
-Uses `rideOffers` from `src/data/rides.ts`.
-
-### Behavior / State
-
-- `RideOfferFeed` is a client component.
-- Local state stores `to` search text and `day` filter.
-- Results exclude offers where `seatsLeft === 0`.
-- Today filter matches `dateLabel === "วันนี้"`.
-- Tomorrow filter matches `dateLabel === "พรุ่งนี้"`.
-- Search matches against `destination` and `via` text.
-
-### Notes for Future Changes
-
-If backend search is added, this page should move filtering from local array filtering to a query/API boundary while preserving the same UI behavior.
-
 ## `/offer/[id]` - Offer Detail Page
 
 ### Purpose
@@ -190,7 +159,7 @@ Show full information for one ride offer and provide clear contact actions.
 
 ### UI Sections
 
-- Back link to `/find`
+- Back link to `/`
 - Main route card
 - Route meta: date and departure time
 - Seat availability badge (soft green pill)
@@ -210,19 +179,18 @@ Show full information for one ride offer and provide clear contact actions.
 - Call the driver.
 - Open LINE contact.
 - View driver trust details.
-- Go back to `/find` to browse other offers.
+- Go back to `/` to browse other offers.
 
 ### Main Components
 
-- `DetailLayout`
 - `BackLink`
+- `RideOfferDetailView` (shared hero route card + driver trust card)
+- `PreviewOfferDetail` (reserved `preview` id only)
 - `Card` / `CardBody`
 - `RouteTimeline`
-- `MetricCard`
 - `Surface`
 - `UserRow`
-- `ContactActions`
-- `ContactRow`
+- `DriverQuickActions`
 - `TrustProfileCard`
 
 ### Data Source
@@ -231,12 +199,15 @@ Uses `getOffer(id)` from `src/data/rides.ts`.
 
 The page also uses `rideOffers` and `myOffers` in `generateStaticParams()` to statically generate offer pages.
 
+The reserved id `preview` (`/offer/preview`) renders the just-created post cached in sessionStorage by the post flow instead of mock data.
+
 ### Behavior / State
 
 - This is a server page.
 - `params` is awaited and used to find the offer by id.
 - If the offer does not exist, the page calls `notFound()`.
-- If `seatsLeft === 0`, the page shows a full state and disables direct contact actions in the contact card.
+- `/offer/preview` without a cached created offer also calls `notFound()`.
+- If `seatsLeft === 0`, the page shows a full state and hides direct contact actions.
 - If `offer.note` exists, it is shown as a highlighted note.
 
 ### Notes for Future Changes
@@ -253,10 +224,11 @@ Let drivers share available seats in their car. Users normally arrive here after
 
 - Back link to `/my-posts`
 - Page title: `แชร์ที่ว่างของคุณ`
-- Route form card
+- Route form card (with a 48-hour expiry notice under the travel-day field)
 - Contact form card
 - Submit button
-- Success state after submit
+- Preview step that mirrors `/offer/[id]`: route hero card with timeline, driver card with contact actions and expandable trust profile, then confirm/back buttons
+- Success state after submit (reminds that the post disappears in 48 hours) with a single `ดูโพสต์ของคุณ` button to `/offer/preview`
 
 ### User Actions
 
@@ -267,7 +239,7 @@ Let drivers share available seats in their car. Users normally arrive here after
 - Enter phone and LINE ID.
 - Add optional details.
 - Submit the form.
-- After success, navigate to `/my-posts` or `/find`.
+- After success, tap `ดูโพสต์ของคุณ` to open `/offer/preview`, the detail view of the just-created post.
 
 ### Main Components
 
@@ -279,6 +251,7 @@ Let drivers share available seats in their car. Users normally arrive here after
 - `PairGrid`
 - `Button`
 - `IconBox`
+- `Surface` (wash notice), `Cluster`, `Icon` (`Clock`) for the expiry notice
 
 ### Data Source
 
@@ -290,10 +263,11 @@ No external data is read for the form. Some fields use hard-coded default values
 - Local state `done` controls whether the form or success panel is shown.
 - Form submission calls `preventDefault()` and sets `done` to `true`.
 - Current submission is not persisted to `myOffers` or any backend.
+- The 48-hour expiry is display-only: there is no real countdown or removal yet.
 
 ### Notes for Future Changes
 
-The next product step is to convert form data into a real `RideOffer` creation flow. Add validation, persistence, and error handling before treating this as production behavior.
+The next product step is to convert form data into a real `RideOffer` creation flow. Add validation, persistence, and error handling before treating this as production behavior. A real backend should also add an `expiresAt` timestamp to enforce the 48-hour expiry (and optionally show a countdown on `/my-posts`).
 
 ## `/my-posts` - My Posts Page
 

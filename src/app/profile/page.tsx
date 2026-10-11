@@ -1,4 +1,9 @@
+"use client";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -9,19 +14,45 @@ import { Icon, LineIcon } from "@/components/ui/icon";
 import { ContactRow } from "@/components/ui/rows";
 import { TextLink } from "@/components/ui/nav";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
-import { myOffers } from "@/features/rides/data/rides";
-import { users } from "@/features/users/data/users";
+import { useMyRideOffers } from "@/features/rides/hooks/ride-offer-queries";
+import { useCurrentUser, useUpdateCurrentUser } from "@/features/users/hooks/user-queries";
+import { profileSchema, type ProfileValues } from "@/features/users/schemas/profile-schema";
+import { copy } from "@/content/copy";
 import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight } from "lucide-react";
 
 export default function ProfilePage() {
-  const me = users.me;
+  const { data: me } = useCurrentUser();
+  const { data: myOffers = [] } = useMyRideOffers();
+  const updateUser = useUpdateCurrentUser();
+  const form = useForm<ProfileValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { vehicle: "Toyota Yaris • ขาว • กท 7788", phone: "086-123-4567", facebookUrl: "" },
+  });
+
+  useEffect(() => {
+    if (!me) return;
+    form.reset({
+      vehicle: me.vehicle ? `${me.vehicle.model} • ${me.vehicle.color} • ${me.vehicle.plate}` : "",
+      phone: me.phone ?? "",
+      facebookUrl: me.facebookUrl ?? "",
+    });
+  }, [form, me]);
+
+  if (!me) {
+    return (
+      <Page>
+        <EmptyState icon={User} title={copy.profile.loadingTitle} hint={copy.profile.loadingHint} />
+      </Page>
+    );
+  }
+
   return (
     <Page>
       <PageHeader layout="bar">
         <Title as="h1" size="page" icon={User}>
-          ฉัน
+          {copy.profile.title}
         </Title>
-        <Button variant="outline" size="icon" aria-label="ตั้งค่า">
+        <Button variant="outline" size="icon" aria-label={copy.profile.settings}>
           <Icon icon={Settings} size="xs" />
         </Button>
       </PageHeader>
@@ -34,21 +65,21 @@ export default function ProfilePage() {
             <CardBody pad="even">
               <Stack gap="md">
                 <Title as="h2" size="section" icon={BadgeCheck}>
-                  ยืนยันตัวตน
+                  {copy.profile.verifyTitle}
                 </Title>
                 <Surface tone="success" pad="md">
                   <Cluster justify="between" gap="sm">
-                    <Text weight="bold">เบอร์โทร</Text>
-                    <Badge variant="success">ยืนยันแล้ว</Badge>
+                    <Text weight="bold">{copy.profile.phoneRow}</Text>
+                    <Badge variant="success">{copy.trust.verified}</Badge>
                   </Cluster>
                 </Surface>
                 <Surface tone="wash" pad="md">
                   <Cluster justify="between" gap="sm">
-                    <Text weight="bold">บัตรประชาชน / ใบขับขี่</Text>
-                    <Badge variant="secondary">ยังไม่ยืนยัน</Badge>
+                    <Text weight="bold">{copy.profile.idRow}</Text>
+                    <Badge variant="secondary">{copy.profile.unverified}</Badge>
                   </Cluster>
                 </Surface>
-                <Button width="full">เพิ่มความน่าเชื่อถือ</Button>
+                <Button width="full">{copy.profile.boostTrust}</Button>
               </Stack>
             </CardBody>
           </Card>
@@ -57,25 +88,30 @@ export default function ProfilePage() {
             <CardBody pad="even">
               <Stack gap="md">
                 <Title as="h2" size="section" icon={CarFront}>
-                  รถของฉัน
+                  {copy.profile.vehicleTitle}
                 </Title>
-                <Input defaultValue="Toyota Yaris • ขาว • กท 7788" aria-label="รถของฉัน" />
+                <Input aria-label={copy.profile.vehicleTitle} {...form.register("vehicle")} />
                 <Title as="h2" size="section" icon={Phone}>
-                  ช่องทางติดต่อ
+                  {copy.profile.contactTitle}
                 </Title>
-                <Input defaultValue="086-123-4567" aria-label="เบอร์โทร" />
+                <Input aria-label={copy.shared.phoneLabel} {...form.register("phone")} />
                 <Input
-                  defaultValue={me.facebookUrl ?? ""}
-                  placeholder="https://www.facebook.com/..."
-                  aria-label="Facebook"
+                  placeholder={copy.post.facebookPlaceholder}
+                  aria-label={copy.profile.facebookLabel}
+                  {...form.register("facebookUrl")}
                 />
                 <ContactRow icon={LineIcon}>
                   <Text as="span" weight="medium">
-                    LINE: me.share
+                    {copy.shared.lineLabel(me.lineId ?? "")}
                   </Text>
                 </ContactRow>
-                <Button variant="outline" width="full">
-                  บันทึก
+                <Button
+                  variant="outline"
+                  width="full"
+                  onClick={form.handleSubmit((values) => updateUser.mutate(values))}
+                  disabled={updateUser.isPending}
+                >
+                  {copy.profile.save}
                 </Button>
               </Stack>
             </CardBody>
@@ -86,10 +122,10 @@ export default function ProfilePage() {
       <Stack gap="md">
         <Cluster justify="between" gap="sm">
           <Title as="h2" size="section">
-            เส้นทางที่ฉันแชร์ ({myOffers.length})
+            {copy.profile.routesTitle(myOffers.length)}
           </Title>
           <TextLink href="/my-posts">
-            ดูทั้งหมด <Icon icon={ArrowRight} size="xs" inline />
+            {copy.profile.viewAll} <Icon icon={ArrowRight} size="xs" inline />
           </TextLink>
         </Cluster>
         {myOffers.map((o) => (
@@ -102,16 +138,17 @@ export default function ProfilePage() {
                     {o.origin} <Icon icon={ArrowRight} size="xs" inline /> {o.destination}
                   </Text>
                   <Text size="caption" tone="muted">
-                    {o.dateLabel} • ออก {o.departureTime} น. • ว่าง {o.seatsLeft} ที่
+                    {copy.shared.tripMeta(o.dateLabel, o.departureTime)} •{" "}
+                    {copy.shared.availableSeats(o.seatsLeft)}
                   </Text>
                 </Stack>
-                <Badge variant="success">เปิดรับอยู่</Badge>
+                <Badge variant="success">{copy.shared.openSeats}</Badge>
               </Cluster>
             </CardBody>
           </Card>
         ))}
         <Text size="micro" tone="faint" align="center">
-          สมาชิกตั้งแต่ {me.memberSince}
+          {copy.profile.memberSince(me.memberSince)}
         </Text>
       </Stack>
     </Page>

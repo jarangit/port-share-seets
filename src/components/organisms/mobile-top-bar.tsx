@@ -1,25 +1,51 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ClipboardList, Plus, User, Menu, X, House } from "lucide-react";
+import { Search, ClipboardList, Plus, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Stack } from "@/components/ui/layout";
+import { Cluster, Stack } from "@/components/ui/layout";
 import { Icon, BrandMark } from "@/components/ui/icon";
 import { NavItem } from "@/components/ui/nav";
 import { IconButton } from "@/components/ui/controls";
+import { Fade } from "@/components/ui/fade";
 import { TopBarFrame, TopBarRow, TopBarMenu, TopBarScrim } from "@/components/ui/chrome";
+import {
+  RIDE_SEARCH_INPUT_ID,
+  SEARCH_VISIBILITY_EVENT,
+  type SearchVisibilityDetail,
+} from "@/lib/search-shortcut";
+import { copy } from "@/content/copy";
 
 const items = [
-  { href: "/", label: "เริ่มต้น", icon: House, match: ["/"] },
-  { href: "/find", label: "หารถ", icon: Search, match: ["/find", "/offer"] },
-  { href: "/my-posts", label: "เส้นทางของฉัน", icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
-  { href: "/profile", label: "ฉัน", icon: User, match: ["/profile"] },
+  { href: "/", label: copy.nav.findRide, icon: Search, match: ["/", "/offer"] },
+  { href: "/my-posts", label: copy.nav.myRoutes, icon: ClipboardList, match: ["/my-posts", "/post", "/share"] },
+  { href: "/profile", label: copy.nav.profile, icon: User, match: ["/profile"] },
 ];
 
 export function MobileTopBar() {
   const [open, setOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const pathname = usePathname();
+
+  /* The ride search feed reports whether its input is on screen.
+     Gated by pathname since only the home page has a search input;
+     the feed re-reports on mount when navigating back. */
+  const onSearchPage = pathname === "/";
+
+  useEffect(() => {
+    const onVisibility = (e: Event) => {
+      setShowSearch(!(e as CustomEvent<SearchVisibilityDetail>).detail.visible);
+    };
+    window.addEventListener(SEARCH_VISIBILITY_EVENT, onVisibility);
+    return () => window.removeEventListener(SEARCH_VISIBILITY_EVENT, onVisibility);
+  }, []);
+
+  const backToSearch = () => {
+    setOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById(RIDE_SEARCH_INPUT_ID)?.focus({ preventScroll: true });
+  };
 
   return (
     <>
@@ -27,15 +53,25 @@ export function MobileTopBar() {
       <TopBarFrame>
         <TopBarRow>
           <Link href="/" onClick={() => setOpen(false)}>
-            <BrandMark name="ไปด้วยกัน" compact />
+            <BrandMark name={copy.brand.name} compact />
           </Link>
-          <IconButton
-            label={open ? "ปิดเมนู" : "เปิดเมนู"}
-            icon={{ on: X, off: Menu }}
-            toggled={open}
-            onDark
-            onClick={() => setOpen((v) => !v)}
-          />
+          <Cluster>
+            <Fade show={showSearch && onSearchPage}>
+              <IconButton
+                label={copy.topBar.backToSearch}
+                icon={{ on: Search, off: Search }}
+                onDark
+                onClick={backToSearch}
+              />
+            </Fade>
+            <IconButton
+              label={open ? copy.topBar.closeMenu : copy.topBar.openMenu}
+              icon={{ on: X, off: Menu }}
+              toggled={open}
+              onDark
+              onClick={() => setOpen((v) => !v)}
+            />
+          </Cluster>
         </TopBarRow>
 
         {open && (
@@ -53,7 +89,7 @@ export function MobileTopBar() {
               ))}
               <Button width="full" asChild>
                 <Link href="/share" onClick={() => setOpen(false)}>
-                  <Icon icon={Plus} size="xs" /> แชร์รถ
+                  <Icon icon={Plus} size="xs" /> {copy.nav.shareRide}
                 </Link>
               </Button>
             </Stack>

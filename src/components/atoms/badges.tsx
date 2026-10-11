@@ -3,10 +3,11 @@ import { Icon } from "@/components/ui/icon";
 import { Cluster } from "@/components/ui/layout";
 import { CheckCheck, ShieldCheck, CarFront, Motorbike, type LucideIcon } from "lucide-react";
 import type { VehicleType } from "@/features/rides/types";
+import { copy } from "@/content/copy";
 
 export const vehicleMeta: Record<VehicleType, { label: string; icon: LucideIcon }> = {
-  car: { label: "รถยนต์", icon: CarFront },
-  motorbike: { label: "มอเตอร์ไซค์", icon: Motorbike },
+  car: { label: copy.vehicle.car, icon: CarFront },
+  motorbike: { label: copy.vehicle.motorbike, icon: Motorbike },
 };
 
 export function VehicleBadge({ type }: { type: VehicleType }) {
@@ -32,11 +33,11 @@ export function TrustBadge({
     <Cluster gap="sm">
       {both ? (
         <Badge variant="success" size={compact ? "xs" : "default"}>
-          <Icon icon={CheckCheck} size="xs" /> ยืนยันแล้ว
+          <Icon icon={CheckCheck} size="xs" /> {copy.trust.verified}
         </Badge>
       ) : (
         <Badge variant="secondary">
-          <Icon icon={ShieldCheck} size="xs" /> ยืนยันบางส่วน
+          <Icon icon={ShieldCheck} size="xs" /> {copy.trust.partial}
         </Badge>
       )}
     </Cluster>

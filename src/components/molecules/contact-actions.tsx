@@ -3,6 +3,7 @@ import { Icon } from "@/components/ui/icon";
 import { Cluster } from "@/components/ui/layout";
 import { Phone } from "lucide-react";
 import { LineIcon } from "@/components/ui/icon";
+import { copy } from "@/content/copy";
 
 export function ContactActions({
   phone,
@@ -21,7 +22,7 @@ export function ContactActions({
     <Cluster gap="sm">
       <Button size={size} width="grow" asChild>
         <a href={telHref}>
-          <Icon icon={Phone} size="xs" /> โทร
+          <Icon icon={Phone} size="xs" /> {copy.contact.call}
         </a>
       </Button>
       <Button size={size} width="grow" variant="secondary" asChild>
