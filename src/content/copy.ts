@@ -229,6 +229,7 @@ export const copy = {
     routesTitle: (count: number) => `เส้นทางที่ฉันแชร์ (${count})`,
     viewAll: "ดูทั้งหมด",
     memberSince: (since: string) => `สมาชิกตั้งแต่ ${since}`,
+    logout: "ออกจากระบบ",
     routesEmpty: "ยังไม่มีเส้นทางที่แชร์",
     saveFailed: "บันทึกไม่ได้ ลองอีกครั้ง",
   },

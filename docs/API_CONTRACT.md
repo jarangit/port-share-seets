@@ -40,10 +40,15 @@ Accept: application/json
 
 Protected endpoints require `Authorization: Bearer <accessToken>`.
 
-The token is a JWT issued by `POST /auth/otp/verify` (`{ sub: userId }`,
-expires per `JWT_EXPIRES_IN`). The frontend stores it in `localStorage`
-(`pdk-access-token`) and sends it on every API call. Missing or invalid
-tokens return `401 UNAUTHORIZED`.
+The token is a JWT issued by `POST /auth/otp/verify` or
+`POST /auth/facebook/login` (`{ sub: userId, jti }`, expires per
+`JWT_EXPIRES_IN`). The frontend stores it in `localStorage`
+(`pdk-access-token`) and sends it on every API call. Missing, invalid, or
+revoked tokens return `401 UNAUTHORIZED`.
+
+`POST /auth/logout` (protected) revokes the current token by `jti`
+(`RevokedToken` table, pruned when expired). The frontend also drops its
+local session on logout.
 
 Protected endpoints:
 
@@ -236,6 +241,7 @@ Current UI only toggles `open` and `full`. `closed` is reserved for future owner
 interface UpdateCurrentUserRequest {
   vehicle?: string; // vehicle name
   phone?: string;
+  lineId?: string;
   facebookUrl?: string;
 }
 ```
@@ -305,6 +311,14 @@ interface FacebookLoginResponse {
 
 Facebook users get `verifiedId: true` (Meta-verified identity) but
 `verifiedPhone: false`. A successful login skips OTP entirely.
+
+Two Facebook facts the implementation respects:
+
+- `facebook.com/<app-scoped-id>` is a dead link by Meta's design, so the
+  backend never fabricates a profile URL. Users paste their real profile
+  URL in `/profile` (`PATCH /me { facebookUrl }`).
+- `graph.facebook.com/<app-scoped-id>/picture` does work, so new Facebook
+  users get their FB photo as `avatarUrl` automatically.
 
 ## Endpoints
 

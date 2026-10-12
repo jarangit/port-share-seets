@@ -1,4 +1,5 @@
-import { ApiError, apiFetch, setAccessToken } from "@/lib/api-client";
+import { ApiError, apiFetch, clearAccessToken, setAccessToken } from "@/lib/api-client";
+import { clearFacebookProfile } from "@/features/auth/services/facebook-service";
 import type { UserProfile } from "@/features/users/types";
 
 const MEMBER_KEY = "pdk-member-phone";
@@ -44,4 +45,25 @@ export async function verifyOtp({ phone, otp }: { phone: string; otp: string }) 
     }
     throw error;
   }
+}
+
+function clearMemberPhone() {
+  try {
+    localStorage.removeItem(MEMBER_KEY);
+  } catch {
+    // Ignore storage errors.
+  }
+}
+
+/* Log out everywhere: revoke the JWT on the backend (best-effort) and
+   drop every local session trace so the UI returns to logged-out state. */
+export async function signOut() {
+  try {
+    await apiFetch<{ ok: true }>("/auth/logout", { method: "POST" });
+  } catch {
+    // Offline or already-revoked token: local cleanup is what matters.
+  }
+  clearAccessToken();
+  clearMemberPhone();
+  clearFacebookProfile();
 }

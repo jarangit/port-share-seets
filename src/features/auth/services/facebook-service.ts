@@ -147,9 +147,11 @@ export async function connectFacebook(): Promise<FacebookLoginResult> {
     body: JSON.stringify({ accessToken: status.authResponse.accessToken }),
   });
   setAccessToken(result.accessToken);
+  // Never fabricate facebook.com/<app-scoped-id>: Meta intentionally leaves
+  // those links dead. The real profile URL comes from the user's profile.
   const profile: FacebookProfile = {
     name: result.user.name,
-    facebookUrl: result.user.facebookUrl ?? `https://www.facebook.com/${status.authResponse.userID}`,
+    facebookUrl: result.user.facebookUrl ?? "",
   };
   try {
     localStorage.setItem(FACEBOOK_KEY, JSON.stringify(profile));
@@ -159,11 +161,15 @@ export async function connectFacebook(): Promise<FacebookLoginResult> {
   return { profile, user: result.user };
 }
 
-export async function disconnectFacebook() {
-  clearAccessToken();
+export function clearFacebookProfile() {
   try {
     localStorage.removeItem(FACEBOOK_KEY);
   } catch {
     // Ignore storage errors.
   }
+}
+
+export async function disconnectFacebook() {
+  clearAccessToken();
+  clearFacebookProfile();
 }

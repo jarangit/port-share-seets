@@ -1,34 +1,50 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Page, PageHeader, Stack, Cluster, FormGrid } from "@/components/ui/layout";
 import { Surface } from "@/components/ui/surface";
 import { Title, Text } from "@/components/ui/typography";
-import { Icon, LineIcon } from "@/components/ui/icon";
-import { ContactRow } from "@/components/ui/rows";
+import { Icon } from "@/components/ui/icon";
 import { TextLink } from "@/components/ui/nav";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
 import { useMyRideOffers } from "@/features/rides/hooks/ride-offer-queries";
 import { useCurrentUser, useUpdateCurrentUser } from "@/features/users/hooks/user-queries";
+import { signOut } from "@/features/auth/services/otp-service";
 import { isUnauthorized } from "@/lib/api-client";
 import { profileSchema, type ProfileValues } from "@/features/users/schemas/profile-schema";
 import { copy } from "@/content/copy";
-import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight } from "lucide-react";
+import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const { data: me, isLoading, isError, error, refetch } = useCurrentUser();
   const { data: myOffers = [], isLoading: routesLoading, isError: routesError } = useMyRideOffers();
   const updateUser = useUpdateCurrentUser();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await signOut();
+      await queryClient.invalidateQueries();
+    } finally {
+      router.push("/");
+    }
+  }
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { vehicle: "Toyota Yaris", phone: "086-123-4567", facebookUrl: "" },
+    defaultValues: { vehicle: "Toyota Yaris", phone: "086-123-4567", lineId: "me.share", facebookUrl: "" },
   });
 
   useEffect(() => {
@@ -36,6 +52,7 @@ export default function ProfilePage() {
     form.reset({
       vehicle: me.vehicle?.name ?? "",
       phone: me.phone ?? "",
+      lineId: me.lineId ?? "",
       facebookUrl: me.facebookUrl ?? "",
     });
   }, [form, me]);
@@ -120,17 +137,18 @@ export default function ProfilePage() {
                 <Title as="h2" size="section" icon={Phone}>
                   {copy.profile.contactTitle}
                 </Title>
-                <Input aria-label={copy.shared.phoneLabel} {...form.register("phone")} />
-                <Input
-                  placeholder={copy.post.facebookPlaceholder}
-                  aria-label={copy.profile.facebookLabel}
-                  {...form.register("facebookUrl")}
-                />
-                <ContactRow icon={LineIcon}>
-                  <Text as="span" weight="medium">
-                    {copy.shared.lineLabel(me.lineId ?? "")}
-                  </Text>
-                </ContactRow>
+                <Field label={copy.shared.phoneLabel}>
+                  <Input {...form.register("phone")} />
+                </Field>
+                <Field label={copy.post.lineLabel}>
+                  <Input placeholder={copy.post.linePlaceholder} {...form.register("lineId")} />
+                </Field>
+                <Field label={copy.profile.facebookLabel}>
+                  <Input
+                    placeholder={copy.post.facebookPlaceholder}
+                    {...form.register("facebookUrl")}
+                  />
+                </Field>
                 {updateUser.isError ? (
                   <Text size="caption" weight="medium" tone="danger" align="center">
                     {copy.profile.saveFailed}
@@ -195,6 +213,9 @@ export default function ProfilePage() {
         <Text size="micro" tone="faint" align="center">
           {copy.profile.memberSince(me.memberSince)}
         </Text>
+        <Button variant="outline" width="full" onClick={handleLogout} disabled={loggingOut}>
+          <Icon icon={LogOut} size="xs" /> {copy.profile.logout}
+        </Button>
       </Stack>
     </Page>
   );
