@@ -38,10 +38,10 @@ export function HeaderInner({ children }: { children: ReactNode }) {
   );
 }
 
-/* TopBarFrame — fixed mobile container */
+/* TopBarFrame — fixed mobile container, always full width */
 export function TopBarFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="fixed inset-x-0 top-0 z-40 mx-auto w-full max-w-[480px] lg:hidden">{children}</div>
+    <div className="fixed inset-x-0 top-0 z-40 w-full lg:hidden">{children}</div>
   );
 }
 

@@ -13,6 +13,7 @@ const buttonVariants = cva(
         outline: "border border-border bg-surface text-primary hover:bg-surface-subtle",
         ghost: "bg-transparent text-primary hover:bg-interactive",
         danger: "bg-danger text-on-danger hover:bg-danger-hover",
+        facebook: "border border-facebook bg-surface text-facebook hover:bg-surface-subtle active:bg-surface-subtle",
       },
       size: {
         default: "h-12 px-6",

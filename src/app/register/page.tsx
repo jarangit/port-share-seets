@@ -201,7 +201,7 @@ export default function RegisterPage() {
                       <Stack gap="sm">
                         <Button
                           type="button"
-                          variant="outline"
+                          variant="facebook"
                           size="lg"
                           width="full"
                           disabled={fbBusy}

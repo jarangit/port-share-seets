@@ -43,6 +43,10 @@
   --red-500: #ef4444;
   --red-600: #dc2626;
 
+  /* PRIMITIVE — FACEBOOK BRAND (login button only) */
+  --facebook-600: #1877f2;
+  --facebook-700: #166fe5;
+
   /* PRIMITIVE — OVERLAY */
   --p-overlay: rgb(16 22 19 / 0.5);
 
@@ -147,6 +151,11 @@
   --danger: var(--red-600);
   --danger-hover: var(--red-500);
   --on-danger: var(--neutral-0);
+
+  /* Facebook (login button only) */
+  --facebook: var(--facebook-600);
+  --facebook-hover: var(--facebook-700);
+  --on-facebook: var(--neutral-0);
 
   /* Verified */
   --verified: var(--green-600);
@@ -271,6 +280,9 @@
   --color-danger: var(--danger);
   --color-danger-hover: var(--danger-hover);
   --color-on-danger: var(--on-danger);
+  --color-facebook: var(--facebook);
+  --color-facebook-hover: var(--facebook-hover);
+  --color-on-facebook: var(--on-facebook);
   --color-overlay: var(--overlay);
 
   --radius-card: var(--radius-card);
