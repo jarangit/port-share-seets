@@ -28,6 +28,28 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Backend API
+
+Ride/user/OTP data comes from the `share-seets-be` API. Run it first
+(see its README), then point the frontend at it:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:4000 npm run dev
+```
+
+The default when the variable is unset is `http://localhost:4000`.
+
+## Facebook Login
+
+Set a Meta App ID to enable the real Facebook button on `/register`:
+
+```bash
+NEXT_PUBLIC_FACEBOOK_APP_ID=your-app-id npm run dev
+```
+
+Without it, the button shows a "not ready" message. The backend optionally
+verifies tokens against your app with `FACEBOOK_APP_ID/SECRET`.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 ## Learn More

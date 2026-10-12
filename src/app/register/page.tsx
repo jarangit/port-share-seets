@@ -15,6 +15,7 @@ import { copy } from "@/content/copy";
 import { useRequestOtp, useVerifyOtp } from "@/features/auth/hooks/otp-queries";
 import { useConnectFacebook, useDisconnectFacebook } from "@/features/auth/hooks/facebook-queries";
 import {
+  FacebookNotConfiguredError,
   getStoredFacebookProfile,
   type FacebookProfile,
 } from "@/features/auth/services/facebook-service";
@@ -55,23 +56,35 @@ export default function RegisterPage() {
       setError(copy.register.phoneIncomplete);
       return;
     }
-    const result = await requestOtp.mutateAsync(to);
-    setExpected(result.demoCode);
-    otpForm.reset({ otp: "" });
-    setError("");
-    setAttempts(0);
-    setResendIn(RESEND_COOLDOWN);
-    setStep("otp");
+    try {
+      const result = await requestOtp.mutateAsync(to);
+      setExpected(result.demoCode ?? "");
+      otpForm.reset({ otp: "" });
+      setError("");
+      setAttempts(0);
+      setResendIn(RESEND_COOLDOWN);
+      setStep("otp");
+    } catch {
+      setError(copy.register.sendFailed);
+    }
   }
 
   async function connectFacebook() {
     setFbBusy(true);
     setError("");
     try {
-      const profile = await connectFbMutation.mutateAsync();
-      setFbProfile(profile);
-    } catch {
-      setError(copy.register.facebookConnecting);
+      // Real Facebook Login: the service exchanges the FB token for our
+      // JWT session, so a connected user can skip OTP entirely.
+      const result = await connectFbMutation.mutateAsync();
+      setFbProfile(result.profile);
+      setError("");
+      setStep("done");
+    } catch (error) {
+      setError(
+        error instanceof FacebookNotConfiguredError
+          ? copy.register.facebookNotConfigured
+          : copy.register.facebookFailed
+      );
     } finally {
       setFbBusy(false);
     }
@@ -88,7 +101,13 @@ export default function RegisterPage() {
   }
 
   async function verify(values: OtpValues) {
-    const result = await verifyOtpMutation.mutateAsync({ phone, otp: values.otp });
+    let result: Awaited<ReturnType<typeof verifyOtpMutation.mutateAsync>>;
+    try {
+      result = await verifyOtpMutation.mutateAsync({ phone, otp: values.otp });
+    } catch {
+      setError(copy.register.sendFailed);
+      return;
+    }
     if (result.ok) {
       if (fbProfile) {
         try {
@@ -173,7 +192,7 @@ export default function RegisterPage() {
                         {error}
                       </Text>
                     ) : null}
-                    <Button type="submit" size="lg" width="full">
+                    <Button type="submit" size="lg" width="full" disabled={requestOtp.isPending}>
                       {copy.register.sendOtp}
                     </Button>
                     <Text size="micro" tone="faint" align="center">
@@ -253,7 +272,7 @@ export default function RegisterPage() {
                         {error}
                       </Text>
                     ) : null}
-                    <Button type="submit" size="lg" width="full">
+                    <Button type="submit" size="lg" width="full" disabled={verifyOtpMutation.isPending}>
                       {copy.register.verifyOtp}
                     </Button>
                     <Stack gap="sm">
@@ -261,7 +280,7 @@ export default function RegisterPage() {
                         type="button"
                         variant="ghost"
                         width="full"
-                        disabled={resendIn > 0}
+                        disabled={resendIn > 0 || requestOtp.isPending}
                         onClick={() => sendOtp(phone)}
                       >
                         {resendIn > 0 ? copy.register.resendIn(resendIn) : copy.register.resend}

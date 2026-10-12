@@ -1,18 +1,20 @@
 "use client";
 import Link from "next/link";
 import { Card, CardBody } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Page, PageHeader, Stack, Cluster, CardGrid } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { useMyRideOffers, useUpdateRideOfferStatus } from "@/features/rides/hooks/ride-offer-queries";
+import { isUnauthorized } from "@/lib/api-client";
 import { vehicleMeta } from "@/components/atoms/badges";
 import { copy } from "@/content/copy";
-import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone } from "lucide-react";
+import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone, CarFront } from "lucide-react";
 
 export default function MyPostsPage() {
-  const { data: myOffers = [] } = useMyRideOffers();
+  const { data: myOffers = [], isLoading, isError, error, refetch } = useMyRideOffers();
   const updateStatus = useUpdateRideOfferStatus();
 
   return (
@@ -28,6 +30,39 @@ export default function MyPostsPage() {
         </Button>
       </PageHeader>
 
+      {isLoading ? (
+        <EmptyState icon={CarFront} title={copy.myPosts.loadingTitle} hint={copy.myPosts.loadingHint} />
+      ) : isError ? (
+        <EmptyState
+          icon={CarFront}
+          title={isUnauthorized(error) ? copy.shared.requireLoginTitle : copy.myPosts.errorTitle}
+          hint={isUnauthorized(error) ? copy.shared.requireLoginHint : copy.myPosts.errorHint}
+          action={
+            isUnauthorized(error) ? (
+              <Button size="sm" asChild>
+                <Link href="/register">{copy.shared.goLogin}</Link>
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => refetch()}>
+                {copy.shared.retry}
+              </Button>
+            )
+          }
+        />
+      ) : myOffers.length === 0 ? (
+        <EmptyState
+          icon={CarFront}
+          title={copy.myPosts.emptyTitle}
+          hint={copy.myPosts.emptyHint}
+          action={
+            <Button size="sm" asChild>
+              <Link href="/post">
+                <Icon icon={Plus} size="xs" /> {copy.myPosts.shareMore}
+              </Link>
+            </Button>
+          }
+        />
+      ) : (
       <CardGrid>
         {myOffers.map((o) => {
           const isClosed = o.seatsLeft === 0;
@@ -100,6 +135,13 @@ export default function MyPostsPage() {
           );
         })}
       </CardGrid>
+      )}
+
+      {updateStatus.isError ? (
+        <Text size="caption" weight="medium" tone="danger" align="center">
+          {isUnauthorized(updateStatus.error) ? copy.shared.requireLoginHint : copy.myPosts.updateFailed}
+        </Text>
+      ) : null}
 
       <Card>
         <CardBody pad="even">

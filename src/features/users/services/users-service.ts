@@ -1,4 +1,4 @@
-import { users } from "@/features/users/data/users";
+import { apiFetch } from "@/lib/api-client";
 import type { UserProfile } from "@/features/users/types";
 
 export interface UpdateCurrentUserInput {
@@ -7,21 +7,13 @@ export interface UpdateCurrentUserInput {
   facebookUrl?: string;
 }
 
-let currentUser: UserProfile = users.me;
-
-const wait = () => new Promise((resolve) => setTimeout(resolve, 120));
-
 export async function getCurrentUser() {
-  await wait();
-  return currentUser;
+  return apiFetch<UserProfile>("/me");
 }
 
 export async function updateCurrentUser(input: UpdateCurrentUserInput) {
-  await wait();
-  currentUser = {
-    ...currentUser,
-    phone: input.phone ?? currentUser.phone,
-    facebookUrl: input.facebookUrl ?? currentUser.facebookUrl,
-  };
-  return currentUser;
+  return apiFetch<UserProfile>("/me", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
 }

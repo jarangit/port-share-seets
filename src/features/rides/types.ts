@@ -21,7 +21,11 @@ export interface RideOffer {
   seatsLeft: number;
   pickupPoints: string[];
   vehicle: Vehicle;
-  contact: { phone: string; lineId: string };
+  contact: { phone: string; lineId: string; facebookUrl?: string };
   note?: string;
   postedAgo: string;
+  status?: "open" | "full" | "closed" | "expired";
+  departureDate?: string;
+  createdAt?: string;
+  expiresAt?: string;
 }

@@ -38,9 +38,12 @@ Accept: application/json
 
 ### Authentication
 
-Protected endpoints require a current user session.
+Protected endpoints require `Authorization: Bearer <accessToken>`.
 
-The frontend does not yet implement real auth. BE should define the final mechanism, such as cookie session or bearer token.
+The token is a JWT issued by `POST /auth/otp/verify` (`{ sub: userId }`,
+expires per `JWT_EXPIRES_IN`). The frontend stores it in `localStorage`
+(`pdk-access-token`) and sends it on every API call. Missing or invalid
+tokens return `401 UNAUTHORIZED`.
 
 Protected endpoints:
 
@@ -49,13 +52,14 @@ Protected endpoints:
 - `GET /me/ride-offers`
 - `POST /ride-offers`
 - `PATCH /ride-offers/{id}/status`
-- `POST /auth/otp/verify`
 
 Public endpoints:
 
 - `GET /ride-offers`
 - `GET /ride-offers/{id}`
 - `POST /auth/otp/request`
+- `POST /auth/otp/verify`
+- `POST /auth/facebook/login`
 
 ### Error Response
 
@@ -279,8 +283,37 @@ interface OtpVerifyRequest {
 interface OtpVerifyResponse {
   ok: true;
   user: CurrentUserProfile;
+  accessToken: string; // JWT Bearer for protected endpoints
 }
 ```
+
+One account per phone number: verifying an unknown phone creates a new
+user; verifying a known phone returns that user and marks the phone
+verified.
+
+### Facebook Login
+
+```http
+POST /auth/facebook/login
+```
+
+Powers the "continue with Facebook" button on `/register`. The frontend
+loads the Facebook JS SDK (`NEXT_PUBLIC_FACEBOOK_APP_ID`), runs `FB.login`
+for `public_profile`, and sends the FB user access token here. The backend
+verifies the token against the Graph API (plus `debug_token` app check when
+`FACEBOOK_APP_ID/SECRET` are set), finds or creates a user by `facebookId`,
+and returns the same session shape as OTP verify:
+
+```ts
+interface FacebookLoginResponse {
+  ok: true;
+  user: CurrentUserProfile;
+  accessToken: string; // JWT Bearer for protected endpoints
+}
+```
+
+Facebook users get `verifiedId: true` (Meta-verified identity) but
+`verifiedPhone: false`. A successful login skips OTP entirely.
 
 ## Endpoints
 
@@ -701,13 +734,11 @@ Errors:
 
 ### Guest Posting
 
-The UI allows Guest users to create posts without registration. BE must decide one of these approaches:
+The UI allows Guest users to create posts without registration. Current behavior (JWT auth):
 
-1. Allow unauthenticated guest posts with a signed guest session.
-2. Require verified phone before final `POST /ride-offers`.
-3. Allow guest post creation but require contact verification in the request.
-
-The current UI supports both Guest and member entry paths, so the API contract should explicitly choose one behavior before implementation.
+- `POST /ride-offers` requires a verified-phone JWT (option 2 above).
+- Guests who open `/post` without a session see a login prompt
+  linking to `/register` instead of the form.
 
 ## Frontend Service Mapping
 

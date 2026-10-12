@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/avatar";
@@ -30,6 +31,7 @@ import {
   type RideOfferCreateValues,
 } from "@/features/rides/schemas/ride-offer-schema";
 import { useCurrentUser } from "@/features/users/hooks/user-queries";
+import { isUnauthorized } from "@/lib/api-client";
 import { copy } from "@/content/copy";
 import { Check, ArrowRight, ArrowLeft, Clock, Clock3, ChevronDown, type LucideIcon } from "lucide-react";
 
@@ -59,7 +61,13 @@ export default function PostPage() {
   const [preview, setPreview] = useState<RideOffer | null>(null);
   const [createdOffer, setCreatedOffer] = useState<RideOffer | null>(null);
   const createRideOffer = useCreateRideOffer();
-  const { data: currentUser } = useCurrentUser();
+  const {
+    data: currentUser,
+    isLoading: userLoading,
+    isError: userError,
+    error: userFetchError,
+    refetch: refetchUser,
+  } = useCurrentUser();
   const form = useForm<RideOfferCreateInputValues, unknown, RideOfferCreateValues>({
     resolver: zodResolver(rideOfferCreateSchema),
     defaultValues: {
@@ -138,6 +146,38 @@ export default function PostPage() {
     setPreview(null);
     setDone(true);
   };
+
+  if (userLoading) {
+    return (
+      <Page>
+        <EmptyState icon={Clock} title={copy.post.userLoadingTitle} hint={copy.post.userLoadingHint} />
+      </Page>
+    );
+  }
+
+  if (userError || !currentUser) {
+    const needsLogin = isUnauthorized(userFetchError);
+    return (
+      <Page>
+        <EmptyState
+          icon={Clock}
+          title={needsLogin ? copy.shared.requireLoginTitle : copy.post.userErrorTitle}
+          hint={needsLogin ? copy.shared.requireLoginHint : copy.post.userErrorHint}
+          action={
+            needsLogin ? (
+              <Button size="sm" asChild>
+                <Link href="/register">{copy.shared.goLogin}</Link>
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => refetchUser()}>
+                {copy.shared.retry}
+              </Button>
+            )
+          }
+        />
+      </Page>
+    );
+  }
 
   if (done) {
     const offer = createdOffer;
@@ -262,6 +302,22 @@ export default function PostPage() {
           </Card>
 
           {/* 3 — Confirm / back */}
+          {createRideOffer.isError ? (
+            isUnauthorized(createRideOffer.error) ? (
+              <Stack gap="sm" align="center">
+                <Text size="caption" weight="medium" tone="danger" align="center">
+                  {copy.shared.requireLoginHint}
+                </Text>
+                <Button size="sm" asChild>
+                  <Link href="/register">{copy.shared.goLogin}</Link>
+                </Button>
+              </Stack>
+            ) : (
+              <Text size="caption" weight="medium" tone="danger" align="center">
+                {copy.post.createFailed}
+              </Text>
+            )
+          ) : null}
           <PairGrid>
             <Button variant="outline" width="full" type="button" onClick={() => setPreview(null)}>
               <Icon icon={ArrowLeft} size="xs" /> {copy.post.editData}

@@ -1,36 +1,47 @@
+import { ApiError, apiFetch, setAccessToken } from "@/lib/api-client";
+import type { UserProfile } from "@/features/users/types";
+
 const MEMBER_KEY = "pdk-member-phone";
 
-let expectedOtp = "";
-
-const wait = () => new Promise((resolve) => setTimeout(resolve, 120));
-
-function makeOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+export interface RequestOtpResult {
+  phone: string;
+  cooldownSeconds: number;
+  expiresInSeconds: number;
+  demoCode?: string;
 }
 
-function normalizePhone(value: string) {
-  const thaiDigits = "๐๑๒๓๔๕๖๗๘๙";
-  const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
-  return value
-    .replace(/[๐-๙]/g, (digit) => String(thaiDigits.indexOf(digit)))
-    .replace(/[٠-٩]/g, (digit) => String(arabicDigits.indexOf(digit)))
-    .replace(/[^\d]/g, "");
-}
+export type VerifyOtpResult = { ok: true; user: UserProfile } | { ok: false };
 
-export async function requestOtp(phone: string) {
-  await wait();
-  const normalizedPhone = normalizePhone(phone);
-  expectedOtp = makeOtp();
-  return { phone: normalizedPhone, demoCode: expectedOtp };
-}
-
-export async function verifyOtp({ phone, otp }: { phone: string; otp: string }) {
-  await wait();
-  if (otp.trim() !== expectedOtp) return { ok: false as const };
+function rememberMember(phone: string) {
   try {
-    localStorage.setItem(MEMBER_KEY, normalizePhone(phone));
+    localStorage.setItem(MEMBER_KEY, phone);
   } catch {
     // Treat unavailable storage as successful in the mock flow.
   }
-  return { ok: true as const };
+}
+
+export async function requestOtp(phone: string) {
+  return apiFetch<RequestOtpResult>("/auth/otp/request", {
+    method: "POST",
+    body: JSON.stringify({ phone }),
+  });
+}
+
+export async function verifyOtp({ phone, otp }: { phone: string; otp: string }) {
+  try {
+    const result = await apiFetch<{ ok: true; user: UserProfile; accessToken: string }>("/auth/otp/verify", {
+      method: "POST",
+      body: JSON.stringify({ phone, otp }),
+    });
+    setAccessToken(result.accessToken);
+    rememberMember(result.user.phone ?? phone);
+    return { ok: true as const, user: result.user };
+  } catch (error) {
+    // Wrong/expired OTP should keep the existing inline form error UX
+    // instead of crashing the mutation.
+    if (error instanceof ApiError && [400, 401, 422, 429].includes(error.status)) {
+      return { ok: false as const };
+    }
+    throw error;
+  }
 }

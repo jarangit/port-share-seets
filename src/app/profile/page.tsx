@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody } from "@/components/ui/card";
@@ -16,13 +17,14 @@ import { TextLink } from "@/components/ui/nav";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
 import { useMyRideOffers } from "@/features/rides/hooks/ride-offer-queries";
 import { useCurrentUser, useUpdateCurrentUser } from "@/features/users/hooks/user-queries";
+import { isUnauthorized } from "@/lib/api-client";
 import { profileSchema, type ProfileValues } from "@/features/users/schemas/profile-schema";
 import { copy } from "@/content/copy";
 import { Settings, CarFront, Phone, User, BadgeCheck, ArrowRight } from "lucide-react";
 
 export default function ProfilePage() {
-  const { data: me } = useCurrentUser();
-  const { data: myOffers = [] } = useMyRideOffers();
+  const { data: me, isLoading, isError, error, refetch } = useCurrentUser();
+  const { data: myOffers = [], isLoading: routesLoading, isError: routesError } = useMyRideOffers();
   const updateUser = useUpdateCurrentUser();
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -38,10 +40,34 @@ export default function ProfilePage() {
     });
   }, [form, me]);
 
-  if (!me) {
+  if (isLoading) {
     return (
       <Page>
         <EmptyState icon={User} title={copy.profile.loadingTitle} hint={copy.profile.loadingHint} />
+      </Page>
+    );
+  }
+
+  if (isError || !me) {
+    const needsLogin = isUnauthorized(error);
+    return (
+      <Page>
+        <EmptyState
+          icon={User}
+          title={needsLogin ? copy.shared.requireLoginTitle : copy.profile.errorTitle}
+          hint={needsLogin ? copy.shared.requireLoginHint : copy.profile.errorHint}
+          action={
+            needsLogin ? (
+              <Button size="sm" asChild>
+                <Link href="/register">{copy.shared.goLogin}</Link>
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => refetch()}>
+                {copy.shared.retry}
+              </Button>
+            )
+          }
+        />
       </Page>
     );
   }
@@ -105,6 +131,11 @@ export default function ProfilePage() {
                     {copy.shared.lineLabel(me.lineId ?? "")}
                   </Text>
                 </ContactRow>
+                {updateUser.isError ? (
+                  <Text size="caption" weight="medium" tone="danger" align="center">
+                    {copy.profile.saveFailed}
+                  </Text>
+                ) : null}
                 <Button
                   variant="outline"
                   width="full"
@@ -128,7 +159,20 @@ export default function ProfilePage() {
             {copy.profile.viewAll} <Icon icon={ArrowRight} size="xs" inline />
           </TextLink>
         </Cluster>
-        {myOffers.map((o) => (
+        {routesLoading ? (
+          <Text size="caption" tone="muted" align="center">
+            {copy.profile.loadingHint}
+          </Text>
+        ) : routesError ? (
+          <Text size="caption" weight="medium" tone="danger" align="center">
+            {copy.myPosts.errorHint}
+          </Text>
+        ) : myOffers.length === 0 ? (
+          <Text size="caption" tone="muted" align="center">
+            {copy.profile.routesEmpty}
+          </Text>
+        ) : (
+          myOffers.map((o) => (
           <Card key={o.id}>
             <CardBody pad="even">
               <Cluster justify="between" gap="sm">
@@ -146,7 +190,8 @@ export default function ProfilePage() {
               </Cluster>
             </CardBody>
           </Card>
-        ))}
+          ))
+        )}
         <Text size="micro" tone="faint" align="center">
           {copy.profile.memberSince(me.memberSince)}
         </Text>

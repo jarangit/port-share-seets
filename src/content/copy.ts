@@ -34,6 +34,10 @@ export const copy = {
     vehicleColor: (color: string) => `สี${color}`,
     vehiclePlate: (plate: string) => `ทะเบียน ${plate}`,
     lineLabel: (id: string) => `LINE: ${id}`,
+    retry: "ลองอีกครั้ง",
+    requireLoginTitle: "ต้องยืนยันเบอร์ก่อน",
+    requireLoginHint: "ยืนยันเบอร์โทรเพื่อแชร์ที่ว่างและดูโพสต์ของคุณ",
+    goLogin: "ไปยืนยันเบอร์",
   },
 
   header: {
@@ -128,6 +132,7 @@ export const copy = {
     otpLabel: "รหัส OTP 6 หลัก",
     otpPlaceholder: "••••••",
     phoneIncomplete: "กรอกเบอร์โทรให้ครบก่อนนะ",
+    sendFailed: "ส่งรหัสไม่ได้ ลองอีกครั้ง",
     wrongOtp: "รหัสไม่ถูกต้อง ลองอีกครั้ง",
     tooManyAttempts: "ลองขอรหัสใหม่อีกครั้ง",
     verifyOtp: "ยืนยันรหัส",
@@ -140,6 +145,8 @@ export const copy = {
     orDivider: "หรือ",
     facebookLogin: "ดำเนินการต่อด้วย Facebook",
     facebookConnecting: "กำลังเชื่อมต่อ Facebook...",
+    facebookFailed: "เชื่อมต่อ Facebook ไม่ได้ ลองอีกครั้ง",
+    facebookNotConfigured: "Facebook Login ยังไม่พร้อมใช้งาน (ขาด App ID)",
     facebookConnected: (name: string) => `เชื่อมต่อ Facebook แล้ว: ${name}`,
     facebookDisconnect: "ยกเลิกการเชื่อมต่อ",
     facebookHint: "เชื่อม Facebook ไว้ยืนยันตัวตน ยังต้องยืนยันเบอร์โทรต่อ",
@@ -187,6 +194,11 @@ export const copy = {
     previewHint: "นี่คือหน้าที่คนอื่นจะเห็น",
     editData: "แก้ไขข้อมูล",
     confirmShare: "ยืนยันแชร์เส้นทาง",
+    userLoadingTitle: "กำลังโหลดข้อมูลของคุณ",
+    userLoadingHint: "รอสักครู่",
+    userErrorTitle: "ยังโหลดข้อมูลไม่ได้",
+    userErrorHint: "เช็กเน็ตแล้วลองอีกครั้ง",
+    createFailed: "แชร์ไม่ได้ตอนนี้ ลองอีกครั้ง",
   },
 
   myPosts: {
@@ -196,12 +208,21 @@ export const copy = {
     reopen: "รับอีกครั้ง",
     tipTitle: "คนที่ไปทางเดียวกันจะติดต่อคุณทางโทรหรือ LINE",
     tipReminder: (fullLabel: string) => `ที่นั่งเต็มเมื่อไหร่ อย่าลืมกด “${fullLabel}” นะ`,
+    loadingTitle: "กำลังโหลดโพสต์ของคุณ",
+    loadingHint: "รอสักครู่",
+    errorTitle: "ยังโหลดโพสต์ไม่ได้",
+    errorHint: "เช็กเน็ตแล้วลองอีกครั้ง",
+    emptyTitle: "ยังไม่มีโพสต์",
+    emptyHint: "แชร์ที่ว่างแรกของคุณได้เลย",
+    updateFailed: "เปลี่ยนสถานะไม่ได้ ลองอีกครั้ง",
   },
 
   profile: {
     title: "ฉัน",
     loadingTitle: "กำลังโหลดโปรไฟล์",
     loadingHint: "รอสักครู่",
+    errorTitle: "ยังโหลดโปรไฟล์ไม่ได้",
+    errorHint: "เช็กเน็ตแล้วลองอีกครั้ง",
     settings: "ตั้งค่า",
     verifyTitle: "ความน่าเชื่อถือ",
     phoneRow: "เบอร์โทร",
@@ -215,6 +236,8 @@ export const copy = {
     routesTitle: (count: number) => `เส้นทางที่ฉันแชร์ (${count})`,
     viewAll: "ดูทั้งหมด",
     memberSince: (since: string) => `สมาชิกตั้งแต่ ${since}`,
+    routesEmpty: "ยังไม่มีเส้นทางที่แชร์",
+    saveFailed: "บันทึกไม่ได้ ลองอีกครั้ง",
   },
 
   notFound: {
