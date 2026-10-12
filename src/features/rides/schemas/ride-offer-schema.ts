@@ -8,7 +8,7 @@ export const rideOfferCreateSchema = z.object({
   departureTime: z.string().min(1),
   seats: z.coerce.number().int().min(1),
   day: z.enum(["today", "tomorrow"]),
-  vehicleType: z.enum(["car", "motorbike"]),
+  vehicleName: z.string().trim().min(1),
   via: z.string().trim().optional().default(""),
   driverName: z.string().trim().min(1),
   phone: z.string().refine((value) => phoneDigits(value).length >= 9),

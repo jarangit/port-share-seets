@@ -9,7 +9,6 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { useMyRideOffers, useUpdateRideOfferStatus } from "@/features/rides/hooks/ride-offer-queries";
 import { isUnauthorized } from "@/lib/api-client";
-import { vehicleMeta } from "@/components/atoms/badges";
 import { copy } from "@/content/copy";
 import { Plus, Pencil, Power, ArrowRight, Lightbulb, Clock, Phone, CarFront } from "lucide-react";
 
@@ -88,15 +87,13 @@ export default function MyPostsPage() {
                     </Text>
                     <Text size="caption" tone="muted">
                       <Icon
-                        icon={vehicleMeta[o.vehicle.type].icon}
+                        icon={CarFront}
                         size="xs"
                         tone="faint"
                         inline
                         spaced="after"
                       />
-                      {vehicleMeta[o.vehicle.type].label} • {o.vehicle.model} •{" "}
-                      {copy.shared.vehicleColor(o.vehicle.color)} •{" "}
-                      {copy.shared.vehiclePlate(o.vehicle.plate)}
+                      {o.vehicle.name}
                     </Text>
                   </Stack>
 

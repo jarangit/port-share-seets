@@ -28,13 +28,13 @@ export default function ProfilePage() {
   const updateUser = useUpdateCurrentUser();
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { vehicle: "Toyota Yaris • ขาว • กท 7788", phone: "086-123-4567", facebookUrl: "" },
+    defaultValues: { vehicle: "Toyota Yaris", phone: "086-123-4567", facebookUrl: "" },
   });
 
   useEffect(() => {
     if (!me) return;
     form.reset({
-      vehicle: me.vehicle ? `${me.vehicle.model} • ${me.vehicle.color} • ${me.vehicle.plate}` : "",
+      vehicle: me.vehicle?.name ?? "",
       phone: me.phone ?? "",
       facebookUrl: me.facebookUrl ?? "",
     });

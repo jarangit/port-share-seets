@@ -31,8 +31,6 @@ export const copy = {
     availableSeats: (count: number) => `ว่าง ${count} ที่`,
     tripMeta: (date: string, time: string) => `${date} • ออก ${time} น.`,
     seatsMeta: (left: number, total: number) => `ว่าง ${left}/${total} ที่`,
-    vehicleColor: (color: string) => `สี${color}`,
-    vehiclePlate: (plate: string) => `ทะเบียน ${plate}`,
     lineLabel: (id: string) => `LINE: ${id}`,
     retry: "ลองอีกครั้ง",
     requireLoginTitle: "ต้องยืนยันเบอร์ก่อน",
@@ -63,7 +61,6 @@ export const copy = {
     destinationPlaceholder: "พิมพ์ปลายทาง เช่น อโศก",
     showFilters: "แสดงตัวกรอง",
     hideFilters: "ซ่อนตัวกรอง",
-    allVehicles: "ทั้งหมด",
     resultCount: (day: string, count: number) => `${day} • มีรถ ${count} คัน`,
     resultCountFiltered: (day: string, count: number) => `${day} • มีรถที่ไปทางนั้น ${count} คัน`,
     emptyTitle: "ยังไม่มีรถที่ไปทางนี้",
@@ -89,11 +86,6 @@ export const copy = {
     viewFullProfile: "ดูโปรไฟล์เต็ม",
     hideFullProfile: "ซ่อนโปรไฟล์เต็ม",
     seeOtherOffers: "ดูรถคันอื่น",
-  },
-
-  vehicle: {
-    car: "รถยนต์",
-    motorbike: "มอเตอร์ไซค์",
   },
 
   trust: {
@@ -167,7 +159,8 @@ export const copy = {
     timeLabel: "เวลาออก",
     seatsLabel: "จำนวนที่ว่าง",
     dayLabel: "วันที่เดินทาง",
-    vehicleLabel: "ประเภทรถ",
+    vehicleLabel: "ชื่อรถ",
+    vehiclePlaceholder: "เช่น Toyota Yaris",
     viaLabel: "เส้นทางผ่าน (คั่นด้วยคอมมา)",
     viaPlaceholder: "วิภาวดี, อนุสาวรีย์",
     next: "ถัดไป",

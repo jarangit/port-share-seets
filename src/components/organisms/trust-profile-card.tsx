@@ -6,9 +6,8 @@ import { Cluster, Stack } from "@/components/ui/layout";
 import { Title, Text } from "@/components/ui/typography";
 import { Icon, LineIcon } from "@/components/ui/icon";
 import { InfoRow, ContactRow } from "@/components/ui/rows";
-import { Flag, Ban, Phone, BadgeCheck } from "lucide-react";
+import { Flag, Ban, Phone, BadgeCheck, CarFront } from "lucide-react";
 import type { UserProfile } from "@/features/users/types";
-import { vehicleMeta } from "@/components/atoms/badges";
 import { copy } from "@/content/copy";
 
 export function TrustProfileCard({ user: u }: { user: UserProfile }) {
@@ -44,12 +43,9 @@ export function TrustProfileCard({ user: u }: { user: UserProfile }) {
         {u.vehicle && (
           <>
             <Separator />
-            <InfoRow icon={vehicleMeta[u.vehicle.type].icon}>
+            <InfoRow icon={CarFront}>
               <Text as="span" weight="bold">
-                {vehicleMeta[u.vehicle.type].label} • {u.vehicle.model}
-              </Text>
-              <Text as="span" tone="muted">
-                {copy.shared.vehicleColor(u.vehicle.color)} • {copy.shared.vehiclePlate(u.vehicle.plate)}
+                {u.vehicle.name}
               </Text>
             </InfoRow>
           </>

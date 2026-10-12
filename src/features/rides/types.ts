@@ -1,12 +1,7 @@
 import type { UserProfile } from "@/features/users/types";
 
-export type VehicleType = "car" | "motorbike";
-
 export interface Vehicle {
-  type: VehicleType;
-  model: string;
-  color: string;
-  plate: string;
+  name: string;
 }
 
 export interface RideOffer {

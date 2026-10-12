@@ -104,8 +104,6 @@ Example:
 ## Enums
 
 ```ts
-type VehicleType = "car" | "motorbike";
-
 type RideOfferDay = "today" | "tomorrow";
 
 type RideOfferStatus = "open" | "full" | "closed" | "expired";
@@ -119,14 +117,9 @@ type VerificationStatus = "unverified" | "phone_verified" | "id_verified" | "ful
 
 ```ts
 interface Vehicle {
-  type: VehicleType;
-  model: string;
-  color: string;
-  plate: string;
+  name: string; // free-text vehicle name, e.g. "Toyota Yaris"
 }
 ```
-
-Privacy note: BE and product should decide whether `plate` is returned in full, partially masked, or only visible after trust conditions are met.
 
 ### PublicUserProfile
 
@@ -203,7 +196,7 @@ interface CreateRideOfferRequest {
   departureTime: string; // HH:mm
   day: RideOfferDay;
   seats: number;
-  vehicleType: VehicleType;
+  vehicleName: string;
   via: string; // comma-separated waypoints from current UI
   driverName: string;
   phone: string;
@@ -220,7 +213,7 @@ Validation:
 - `departureTime`: required, `HH:mm`
 - `day`: `today` or `tomorrow`
 - `seats`: integer, minimum `1`
-- `vehicleType`: `car` or `motorbike`
+- `vehicleName`: required, non-empty
 - `driverName`: required, non-empty
 - `phone`: required, at least 9 digits after normalization
 - `lineId`: required, non-empty
@@ -241,13 +234,11 @@ Current UI only toggles `open` and `full`. `closed` is reserved for future owner
 
 ```ts
 interface UpdateCurrentUserRequest {
-  vehicle?: string;
+  vehicle?: string; // vehicle name
   phone?: string;
   facebookUrl?: string;
 }
 ```
-
-Current profile UI edits simple text fields. BE may later split `vehicle` into structured fields.
 
 ### OtpRequest
 
@@ -322,7 +313,7 @@ Facebook users get `verifiedId: true` (Meta-verified identity) but
 ### List public ride offers
 
 ```http
-GET /ride-offers?q={q}&day={day}&vehicleType={vehicleType}&status=open
+GET /ride-offers?q={q}&day={day}&status=open
 ```
 
 Purpose: powers the `/` ride search page.
@@ -333,7 +324,6 @@ Query parameters:
 | --- | --- | --- | --- |
 | `q` | string | no | Search destination and route waypoints |
 | `day` | `today` \| `tomorrow` | no | Defaults to `today` |
-| `vehicleType` | `all` \| `car` \| `motorbike` | no | Defaults to `all` |
 | `status` | `open` | no | Public list should only return open offers |
 
 Response `200`:
@@ -352,7 +342,7 @@ Response `200`:
       "seatsTotal": 3,
       "seatsLeft": 2,
       "pickupPoints": ["หน้าฟิวเจอร์พาร์ค รังสิต"],
-      "vehicle": { "type": "car", "model": "Toyota Corolla", "color": "ขาว", "plate": "กข 4521" },
+      "vehicle": { "name": "Toyota Corolla" },
       "contact": { "phone": "081-234-5678", "lineId": "ton.share", "facebookUrl": "https://www.facebook.com/ton.share" },
       "driver": {
         "id": "u-ton",
@@ -404,7 +394,7 @@ Response `200`:
     "seatsTotal": 3,
     "seatsLeft": 2,
     "pickupPoints": ["หน้าฟิวเจอร์พาร์ค รังสิต"],
-    "vehicle": { "type": "car", "model": "Toyota Corolla", "color": "ขาว", "plate": "กข 4521" },
+    "vehicle": { "name": "Toyota Corolla" },
     "contact": { "phone": "081-234-5678", "lineId": "ton.share", "facebookUrl": "https://www.facebook.com/ton.share" },
     "driver": {
       "id": "u-ton",
@@ -415,7 +405,7 @@ Response `200`:
       "verifiedId": true,
       "memberSince": "พ.ค. 2026",
       "sharedCount": 12,
-      "vehicle": { "type": "car", "model": "Toyota Corolla", "color": "ขาว", "plate": "กข 4521" }
+      "vehicle": { "name": "Toyota Corolla" }
     },
     "note": "ขับนิ่ม แวะรับระหว่างทางได้ถ้าไม่ไกลครับ",
     "status": "open",
@@ -450,7 +440,7 @@ Request:
   "departureTime": "07:30",
   "day": "today",
   "seats": 2,
-  "vehicleType": "car",
+  "vehicleName": "Toyota Corolla",
   "via": "วิภาวดี, อนุสาวรีย์",
   "driverName": "คุณ",
   "phone": "086-123-4567",
@@ -506,7 +496,7 @@ Response `200`:
       "seatsTotal": 2,
       "seatsLeft": 2,
       "pickupPoints": ["MRT หลักสี่ ทางออก 3"],
-      "vehicle": { "type": "car", "model": "Toyota Yaris", "color": "ขาว", "plate": "กท 7788" },
+      "vehicle": { "name": "Toyota Yaris" },
       "contact": { "phone": "086-123-4567", "lineId": "me.share" },
       "status": "open",
       "createdAt": "2026-10-11T00:30:00.000Z",
@@ -580,7 +570,7 @@ Response `200`:
     "verifiedId": false,
     "memberSince": "ก.ย. 2026",
     "sharedCount": 1,
-    "vehicle": { "type": "car", "model": "Toyota Yaris", "color": "ขาว", "plate": "กท 7788" },
+    "vehicle": { "name": "Toyota Yaris" },
     "phone": "086-123-4567",
     "lineId": "me.share",
     "facebookUrl": "https://www.facebook.com/share/1GiMNm5bwv/"
@@ -600,7 +590,7 @@ Request:
 
 ```json
 {
-  "vehicle": "Toyota Yaris • ขาว • กท 7788",
+  "vehicle": "Toyota Yaris",
   "phone": "086-123-4567",
   "facebookUrl": "https://www.facebook.com/share/1GiMNm5bwv/"
 }
@@ -618,7 +608,7 @@ Response `200`:
 }
 ```
 
-Future recommendation: replace the single `vehicle` string with structured `{ type, model, color, plate }`.
+
 
 ## OTP Auth
 
@@ -759,8 +749,8 @@ The UI allows Guest users to create posts without registration. Current behavior
 1. Guest posting: should unauthenticated users be allowed to create offers, or must they verify phone first?
 2. Expired detail: should public users get `410 EXPIRED`, `404 NOT_FOUND`, or a read-only expired detail page?
 3. Reopen full offer: when switching `full` back to `open`, should BE restore `seatsLeft = seatsTotal`, restore the previous value, or require explicit seat count?
-4. Vehicle profile: should `/me` store vehicle as structured fields now, instead of accepting the current free-text profile value?
-5. Contact privacy: should phone, LINE, Facebook, and license plate be fully visible to everyone who can open the detail page?
+4. Vehicle profile: is a single free-text name enough, or do we need type/color/plate back later?
+5. Contact privacy: should phone, LINE, and Facebook be fully visible to everyone who can open the detail page?
 6. Verification: what provider or workflow should back phone OTP and ID verification?
 7. Search: should `q` match only destination and via, or also origin/pickup points?
 8. Sorting: should public offers sort by departure time, posted time, route relevance, or availability?

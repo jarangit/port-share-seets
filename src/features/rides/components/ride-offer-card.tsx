@@ -6,10 +6,9 @@ import { Title, Text } from "@/components/ui/typography";
 import { Icon } from "@/components/ui/icon";
 import { CardLink } from "@/components/ui/nav";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
-import { ArrowRight, BadgeCheck, ChevronRight, Clock, Route as RouteIcon, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, CarFront, ChevronRight, Clock, Route as RouteIcon, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import type { RideOffer } from "@/features/rides/types";
-import { vehicleMeta } from "@/components/atoms/badges";
 import { copy } from "@/content/copy";
 
 /* CardSection — link wrapper, or a plain fragment in preview mode
@@ -39,7 +38,6 @@ function CardSection({
 export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer; interactive?: boolean }) {
   const verified = offer.driver.verifiedPhone && offer.driver.verifiedId;
   const href = `/offer/${offer.id}`;
-  const vehicle = vehicleMeta[offer.vehicle.type];
   return (
       <Card>
         <CardBody pad="spacious">
@@ -72,9 +70,8 @@ export function RideOfferCard({ offer, interactive = true }: { offer: RideOffer;
                     {copy.offerCard.viaPrefix} {offer.via.join(" • ")}
                   </Text>
                   <Text size="caption" tone="muted">
-                    <Icon icon={vehicle.icon} size="xs" tone="faint" inline spaced="after" />
-                    {vehicle.label} • {offer.vehicle.model} • {copy.shared.vehicleColor(offer.vehicle.color)} •{" "}
-                    {copy.shared.vehiclePlate(offer.vehicle.plate)}
+                    <Icon icon={CarFront} size="xs" tone="faint" inline spaced="after" />
+                    {offer.vehicle.name}
                   </Text>
                 </Stack>
               </Stack>

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/cards";
@@ -18,11 +18,10 @@ import { BackLink } from "@/components/ui/nav";
 import { RouteTimeline } from "@/components/ui/route-timeline";
 import { Disclosure } from "@/components/ui/disclosure";
 import { RadioGroup, RadioOption } from "@/components/ui/radio-group";
-import { vehicleMeta } from "@/components/atoms/badges";
 import { UserRow } from "@/components/atoms/user-row";
 import { DriverQuickActions } from "@/components/molecules/driver-quick-actions";
 import { TrustProfileCard } from "@/components/organisms/trust-profile-card";
-import type { RideOffer, VehicleType } from "@/features/rides/types";
+import type { RideOffer } from "@/features/rides/types";
 import { PREVIEW_OFFER_ID, saveCreatedOffer } from "@/features/rides/lib/created-offer";
 import { useCreateRideOffer } from "@/features/rides/hooks/ride-offer-queries";
 import {
@@ -33,12 +32,7 @@ import {
 import { useCurrentUser } from "@/features/users/hooks/user-queries";
 import { isUnauthorized } from "@/lib/api-client";
 import { copy } from "@/content/copy";
-import { Check, ArrowRight, ArrowLeft, Clock, Clock3, ChevronDown, type LucideIcon } from "lucide-react";
-
-const vehicleOptions: { id: VehicleType; label: string; icon: LucideIcon }[] = [
-  { id: "car", label: vehicleMeta.car.label, icon: vehicleMeta.car.icon },
-  { id: "motorbike", label: vehicleMeta.motorbike.label, icon: vehicleMeta.motorbike.icon },
-];
+import { Check, ArrowRight, ArrowLeft, CarFront, Clock, Clock3, ChevronDown } from "lucide-react";
 
 type DayTab = "today" | "tomorrow";
 
@@ -76,7 +70,7 @@ export default function PostPage() {
       departureTime: "07:30",
       seats: 2,
       day: "today",
-      vehicleType: "car",
+      vehicleName: "",
       via: "",
       driverName: "",
       phone: "086-123-4567",
@@ -85,11 +79,11 @@ export default function PostPage() {
       note: "",
     },
   });
-  const vehicleType = useWatch({ control: form.control, name: "vehicleType" }) as VehicleType;
   useEffect(() => {
     if (!currentUser) return;
     form.reset({
       ...form.getValues(),
+      vehicleName: form.getValues("vehicleName") || currentUser.vehicle?.name || "",
       driverName: form.getValues("driverName") || currentUser.name,
       phone: form.getValues("phone") || currentUser.phone || "",
       lineId: form.getValues("lineId") || currentUser.lineId || "",
@@ -98,7 +92,7 @@ export default function PostPage() {
   }, [currentUser, form]);
 
   const goNext = async () => {
-    const ok = await form.trigger(["origin", "destination", "departureTime", "seats", "day", "vehicleType", "via"]);
+    const ok = await form.trigger(["origin", "destination", "departureTime", "seats", "day", "vehicleName", "via"]);
     if (ok) setStep(2);
   };
 
@@ -127,10 +121,7 @@ export default function PostPage() {
       seatsLeft: seats,
       pickupPoints: [],
       vehicle: {
-        type: values.vehicleType,
-        model: me.vehicle?.model ?? "-",
-        color: me.vehicle?.color ?? "-",
-        plate: me.vehicle?.plate ?? "-",
+        name: values.vehicleName.trim() || me.vehicle?.name || "-",
       },
       contact: { phone: values.phone, lineId: values.lineId },
       note: values.note?.trim() || undefined,
@@ -195,7 +186,7 @@ export default function PostPage() {
                   <Text size="meta" tone="muted" align="center" narrow>
                     {offer.origin} <Icon icon={ArrowRight} size="xs" inline /> {offer.destination} •{" "}
                     {copy.shared.tripMeta(offer.dateLabel, offer.departureTime)} •{" "}
-                    {copy.shared.availableSeats(offer.seatsLeft)} • {vehicleMeta[offer.vehicle.type].label} {copy.post.successContactHint}
+                    {copy.shared.availableSeats(offer.seatsLeft)} • {offer.vehicle.name} {copy.post.successContactHint}
                   </Text>
                 )}
                 <Text size="caption" tone="muted" align="center">
@@ -340,7 +331,7 @@ export default function PostPage() {
     <Page>
       <BackLink href="/my-posts" label={copy.shared.back} />
       <PageHeader>
-        <Title as="h1" size="page" icon={vehicleMeta[vehicleType].icon}>
+        <Title as="h1" size="page" icon={CarFront}>
           {copy.post.title}
         </Title>
       </PageHeader>
@@ -399,17 +390,7 @@ export default function PostPage() {
                   </Cluster>
                 </Surface>
                 <Field label={copy.post.vehicleLabel}>
-                  <Controller
-                    control={form.control}
-                    name="vehicleType"
-                    render={({ field }) => (
-                      <RadioGroup value={field.value} onValueChange={field.onChange} orientation="horizontal">
-                        {vehicleOptions.map((o) => (
-                          <RadioOption key={o.id} value={o.id} label={o.label} icon={o.icon} />
-                        ))}
-                      </RadioGroup>
-                    )}
-                  />
+                  <Input required placeholder={copy.post.vehiclePlaceholder} {...form.register("vehicleName")} />
                 </Field>
                 <Field label={copy.post.viaLabel}>
                   <Input placeholder={copy.post.viaPlaceholder} {...form.register("via")} />

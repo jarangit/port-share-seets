@@ -15,29 +15,19 @@ import {
   SEARCH_VISIBILITY_EVENT,
   type SearchVisibilityDetail,
 } from "@/lib/search-shortcut";
-import type { VehicleType } from "@/features/rides/types";
-import { vehicleMeta } from "@/components/atoms/badges";
 import { copy } from "@/content/copy";
 import { Search, CarFront, SlidersHorizontal } from "lucide-react";
 
 type DayTab = "today" | "tomorrow";
-type VehicleFilter = "all" | VehicleType;
 
 const dayTabs: { id: DayTab; label: string }[] = [
   { id: "today", label: copy.shared.today },
   { id: "tomorrow", label: copy.shared.tomorrow },
 ];
 
-const vehicleTabs: { id: VehicleFilter; label: string }[] = [
-  { id: "all", label: copy.find.allVehicles },
-  { id: "car", label: vehicleMeta.car.label },
-  { id: "motorbike", label: vehicleMeta.motorbike.label },
-];
-
 export function RideOfferFeed() {
   const [to, setTo] = useState("");
   const [day, setDay] = useState<DayTab>("today");
-  const [vehicle, setVehicle] = useState<VehicleFilter>("all");
   const [expanded, setExpanded] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -60,11 +50,11 @@ export function RideOfferFeed() {
     return () => observer.disconnect();
   }, []);
 
-  const filters = useMemo(() => ({ q: to, day, vehicleType: vehicle }), [to, day, vehicle]);
+  const filters = useMemo(() => ({ q: to, day }), [to, day]);
   const { data: results = [], isLoading, isError } = useRideOffers(filters);
 
-  const hasQuery = to.trim() !== "" || vehicle !== "all";
-  const isFiltering = day !== "today" || vehicle !== "all";
+  const hasQuery = to.trim() !== "";
+  const isFiltering = day !== "today";
 
   return (
     <Stack gap="md">
@@ -92,10 +82,7 @@ export function RideOfferFeed() {
             </Button>
           </Cluster>
           {expanded && (
-            <>
-              <SegmentedControl options={dayTabs} value={day} onChange={setDay} />
-              <SegmentedControl options={vehicleTabs} value={vehicle} onChange={setVehicle} />
-            </>
+            <SegmentedControl options={dayTabs} value={day} onChange={setDay} />
           )}
         </Stack>
       </SearchPanel>
@@ -123,7 +110,6 @@ export function RideOfferFeed() {
                 onClick={() => {
                   setTo("");
                   setDay("today");
-                  setVehicle("all");
                 }}
               >
                 <Icon icon={Search} size="xs" /> {copy.find.clearSearch}

@@ -1,7 +1,7 @@
 import { ApiError, apiFetch, toQuery } from "@/lib/api-client";
 import { rideOffers, myOffers, getOffer as getMockOffer } from "@/features/rides/data/rides";
 import { PREVIEW_OFFER_ID, readCreatedOffer } from "@/features/rides/lib/created-offer";
-import type { RideOffer, VehicleType } from "@/features/rides/types";
+import type { RideOffer } from "@/features/rides/types";
 
 export type RideOfferDay = "today" | "tomorrow";
 export type RideOfferStatus = "open" | "full" | "closed" | "expired";
@@ -9,7 +9,6 @@ export type RideOfferStatus = "open" | "full" | "closed" | "expired";
 export interface RideOfferFilters {
   q?: string;
   day?: RideOfferDay;
-  vehicleType?: "all" | VehicleType;
 }
 
 export interface CreateRideOfferInput {
@@ -18,7 +17,7 @@ export interface CreateRideOfferInput {
   departureTime: string;
   day: RideOfferDay;
   seats: number;
-  vehicleType: VehicleType;
+  vehicleName: string;
   via: string;
   driverName: string;
   phone: string;
@@ -31,7 +30,6 @@ export async function listRideOffers(filters: RideOfferFilters = {}) {
   const qs = toQuery({
     q: filters.q?.trim() || undefined,
     day: filters.day,
-    vehicleType: filters.vehicleType,
   });
   return apiFetch<RideOffer[]>(`/ride-offers${qs}`);
 }

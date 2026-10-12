@@ -21,7 +21,7 @@ export interface UserProfile {
   verifiedId: boolean;
   memberSince: string;
   sharedCount: number;
-  vehicle?: { model: string; color: string; plate: string };
+  vehicle?: { name: string };
   phone?: string;
   lineId?: string;
 }
@@ -73,7 +73,7 @@ export interface RideOffer {
   seatsTotal: number;
   seatsLeft: number;
   pickupPoints: string[];
-  vehicle: { model: string; color: string; plate: string };
+  vehicle: { name: string };
   contact: { phone: string; lineId: string };
   note?: string;
   postedAgo: string;
