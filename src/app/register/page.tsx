@@ -13,8 +13,15 @@ import { BackLink } from "@/components/ui/nav";
 import { IconBox } from "@/components/ui/icon";
 import { copy } from "@/content/copy";
 import { useRequestOtp, useVerifyOtp } from "@/features/auth/hooks/otp-queries";
+import { useConnectFacebook, useDisconnectFacebook } from "@/features/auth/hooks/facebook-queries";
+import {
+  getStoredFacebookProfile,
+  type FacebookProfile,
+} from "@/features/auth/services/facebook-service";
 import { otpSchema, phoneSchema, type OtpValues, type PhoneValues } from "@/features/auth/schemas/otp-schema";
+import { updateCurrentUser } from "@/features/users/services/users-service";
 import { Check } from "lucide-react";
+import { FaFacebook } from "react-icons/fa";
 
 type Step = "phone" | "otp" | "done";
 
@@ -27,8 +34,12 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [resendIn, setResendIn] = useState(0);
+  const [fbProfile, setFbProfile] = useState<FacebookProfile | null>(() => getStoredFacebookProfile());
+  const [fbBusy, setFbBusy] = useState(false);
   const requestOtp = useRequestOtp();
   const verifyOtpMutation = useVerifyOtp();
+  const connectFbMutation = useConnectFacebook();
+  const disconnectFbMutation = useDisconnectFacebook();
   const phoneForm = useForm<PhoneValues>({ resolver: zodResolver(phoneSchema), defaultValues: { phone: "" } });
   const otpForm = useForm<OtpValues>({ resolver: zodResolver(otpSchema), defaultValues: { otp: "" } });
 
@@ -53,9 +64,39 @@ export default function RegisterPage() {
     setStep("otp");
   }
 
+  async function connectFacebook() {
+    setFbBusy(true);
+    setError("");
+    try {
+      const profile = await connectFbMutation.mutateAsync();
+      setFbProfile(profile);
+    } catch {
+      setError(copy.register.facebookConnecting);
+    } finally {
+      setFbBusy(false);
+    }
+  }
+
+  async function disconnectFacebook() {
+    setFbBusy(true);
+    try {
+      await disconnectFbMutation.mutateAsync();
+      setFbProfile(null);
+    } finally {
+      setFbBusy(false);
+    }
+  }
+
   async function verify(values: OtpValues) {
     const result = await verifyOtpMutation.mutateAsync({ phone, otp: values.otp });
     if (result.ok) {
+      if (fbProfile) {
+        try {
+          await updateCurrentUser({ facebookUrl: fbProfile.facebookUrl });
+        } catch {
+          // Mock persistence is best-effort; OTP success still counts.
+        }
+      }
       setError("");
       setStep("done");
       return;
@@ -82,6 +123,11 @@ export default function RegisterPage() {
                   <Text size="meta" tone="muted" align="center" narrow>
                     {copy.register.doneHint(phone)}
                   </Text>
+                  {fbProfile ? (
+                    <Text size="caption" weight="medium" align="center">
+                      {copy.register.facebookDoneHint(fbProfile.name)}
+                    </Text>
+                  ) : null}
                 </Stack>
                 <Button width="full" asChild>
                   <Link href="/post">{copy.register.goShare}</Link>
@@ -130,6 +176,45 @@ export default function RegisterPage() {
                     <Button type="submit" size="lg" width="full">
                       {copy.register.sendOtp}
                     </Button>
+                    <Text size="micro" tone="faint" align="center">
+                      {copy.register.orDivider}
+                    </Text>
+                    {fbProfile ? (
+                      <Stack gap="sm" align="center">
+                        <Text size="caption" weight="medium" align="center">
+                          {copy.register.facebookConnected(fbProfile.name)}
+                        </Text>
+                        <Text size="micro" tone="faint" align="center">
+                          {copy.register.facebookHint}
+                        </Text>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          width="full"
+                          disabled={fbBusy}
+                          onClick={disconnectFacebook}
+                        >
+                          {copy.register.facebookDisconnect}
+                        </Button>
+                      </Stack>
+                    ) : (
+                      <Stack gap="sm">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          width="full"
+                          disabled={fbBusy}
+                          onClick={connectFacebook}
+                        >
+                          <FaFacebook />
+                          {fbBusy ? copy.register.facebookConnecting : copy.register.facebookLogin}
+                        </Button>
+                        <Text size="micro" tone="faint" align="center">
+                          {copy.register.facebookHint}
+                        </Text>
+                      </Stack>
+                    )}
                   </Stack>
                 </form>
               </CardBody>
@@ -146,6 +231,11 @@ export default function RegisterPage() {
                       <Text size="micro" tone="faint" align="center">
                         {copy.register.demoCode(expected)}
                       </Text>
+                      {fbProfile ? (
+                        <Text size="micro" tone="faint" align="center">
+                          {copy.register.facebookConnected(fbProfile.name)}
+                        </Text>
+                      ) : null}
                     </Stack>
                     <Field label={copy.register.otpLabel}>
                       <Input

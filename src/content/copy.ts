@@ -137,6 +137,13 @@ export const copy = {
     doneTitle: "ยืนยันเบอร์แล้ว",
     doneHint: (phone: string) => `เบอร์ ${phone} ช่วยให้คนติดต่อคุณมั่นใจขึ้น`,
     goShare: "เริ่มแชร์ที่ว่าง",
+    orDivider: "หรือ",
+    facebookLogin: "ดำเนินการต่อด้วย Facebook",
+    facebookConnecting: "กำลังเชื่อมต่อ Facebook...",
+    facebookConnected: (name: string) => `เชื่อมต่อ Facebook แล้ว: ${name}`,
+    facebookDisconnect: "ยกเลิกการเชื่อมต่อ",
+    facebookHint: "เชื่อม Facebook ไว้ยืนยันตัวตน ยังต้องยืนยันเบอร์โทรต่อ",
+    facebookDoneHint: (name: string) => `เชื่อมต่อ Facebook ในฐานะ ${name}`,
   },
 
   post: {
